@@ -1,10 +1,8 @@
 import os
-
 import streamlit as st
 import numpy as np
 import pandas as pd
 import pydeck as pdk
-
 from django.contrib.auth import authenticate
 
 # django wsgi.py
@@ -43,17 +41,6 @@ def check_password():
     
 if check_password():
 
-    # MAIN PAGE
-    # ----------------------------------------
-
-    st.title("Hello World")
-
-    # random dataframe displayed on map
-    map_data = pd.DataFrame(
-    np.random.randn(1000, 2) / [50, 50] + [37.76, -122.4],
-    columns=['lat', 'lon'])
-    st.map(map_data)
-
     # open and read all four video files
     video_file1 = open("videos/Oaks.mp4", "rb")
     video_bytes1 = video_file1.read()
@@ -63,25 +50,30 @@ if check_password():
     video_bytes3 = video_file3.read()
     video_file4 = open("videos/Sierra.mp4", "rb")
     video_bytes4 = video_file4.read()
-
+    video_file5 = open("videos/fakeVideo.mp4", "rb")
+    video_bytes5 = video_file5.read()
     left_column, right_column = st.columns(2)
-    # You can use a column just like st.sidebar:
-    left_column.button('Press me!')
+    botLeft, botMid, botRight = st.columns(3)
 
+    # You can use a column just like st.sidebar
     # Or even better, call Streamlit functions inside a "with" block:
-    with right_column:
-        chosen = st.radio(
-            'Sorting hat',
-            ("Gryffindor", "Ravenclaw", "Hufflepuff", "Slytherin"))
-        st.write(f"You are in {chosen} house!")
+#    with right_column:
+#        chosen = st.radio(
+#            'Available Feeds',
+#            ("Feed 1", "Feed 2", "Feed 3", "Feed 4", "Feed 5"))
+#        st.write(f"You are in {chosen}")
 
     # Add sidebar with checkbox to show/hide videos:
     with st.sidebar:
         if st.checkbox('Show Video 1'):
             left_column.video(video_bytes1)
         if st.checkbox('Show Video 2'):
-            st.video(video_bytes2)
+            right_column.video(video_bytes2)
         if st.checkbox('Show Video 3'):
-            st.video(video_bytes3)
+            botLeft.video(video_bytes3)
         if st.checkbox('Show Video 4'):
-            st.video(video_bytes4)
+            botMid.video(video_bytes4)
+        if st.checkbox('Show Video 5'):
+            botRight.video(video_bytes5)
+    
+

@@ -23,5 +23,6 @@ def load_map():
     r = pdk.Deck(terrain_layer, initial_view_state=view_state)
     return r
 
+
 st.pydeck_chart(load_map())
 st.button('Re-run')

@@ -1,6 +1,9 @@
 import os
 
 import streamlit as st
+import numpy as np
+import pandas as pd
+import pydeck as pdk
 
 from django.contrib.auth import authenticate
 
@@ -45,6 +48,12 @@ if check_password():
 
     st.title("Hello World")
 
+    # random dataframe displayed on map
+    map_data = pd.DataFrame(
+    np.random.randn(1000, 2) / [50, 50] + [37.76, -122.4],
+    columns=['lat', 'lon'])
+    st.map(map_data)
+
     # open and read all four video files
     video_file1 = open("videos/Oaks.mp4", "rb")
     video_bytes1 = video_file1.read()
@@ -55,8 +64,24 @@ if check_password():
     video_file4 = open("videos/Sierra.mp4", "rb")
     video_bytes4 = video_file4.read()
 
-    # play the videos
-    st.video(video_bytes1)
-    st.video(video_bytes2)
-    st.video(video_bytes3)
-    st.video(video_bytes4)
+    left_column, right_column = st.columns(2)
+    # You can use a column just like st.sidebar:
+    left_column.button('Press me!')
+
+    # Or even better, call Streamlit functions inside a "with" block:
+    with right_column:
+        chosen = st.radio(
+            'Sorting hat',
+            ("Gryffindor", "Ravenclaw", "Hufflepuff", "Slytherin"))
+        st.write(f"You are in {chosen} house!")
+
+    # Add sidebar with checkbox to show/hide videos:
+    with st.sidebar:
+        if st.checkbox('Show Video 1'):
+            left_column.video(video_bytes1)
+        if st.checkbox('Show Video 2'):
+            st.video(video_bytes2)
+        if st.checkbox('Show Video 3'):
+            st.video(video_bytes3)
+        if st.checkbox('Show Video 4'):
+            st.video(video_bytes4)

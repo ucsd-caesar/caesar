@@ -1,6 +1,10 @@
 import streamlit as st
 import pydeck as pdk
 import os
+import folium
+from folium.plugins import Draw
+
+from streamlit_folium import st_folium
 
 st.set_page_config(page_title="Map", layout="wide", initial_sidebar_state="expanded")
 
@@ -25,5 +29,10 @@ def load_map():
     r = pdk.Deck(terrain_layer, initial_view_state=view_state)
     return r
 
+# Folium map
+m = folium.Map(location=[39.949610, -75.150282], zoom_start=5)
+Draw(export=True).add_to(m)
+output = st_folium(m, width=700, height=500)
 
+# Pydeck map
 st.pydeck_chart(load_map())

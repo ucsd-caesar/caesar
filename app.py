@@ -77,14 +77,21 @@ if check_password():
         checkbox5 = st.checkbox('Show Video 5', key = 'e')
 
         st.write('### ')
-        def sel_callback():
+        def select_callback():
             st.session_state.a = st.session_state.sel
             st.session_state.b = st.session_state.sel
             st.session_state.c = st.session_state.sel
             st.session_state.d = st.session_state.sel
             st.session_state.e = st.session_state.sel
 
-        st.checkbox('Select All', key='sel', on_change=sel_callback)
+        def deselect_callback():
+            st.session_state.a = False
+            st.session_state.b = False
+            st.session_state.c = False
+            st.session_state.d = False
+            st.session_state.e = False
+        st.button('Select All', key='sel', on_click = select_callback)
+        st.button('Deselect All', on_click = deselect_callback)
 
         box_list = [checkbox1, checkbox2, checkbox3, checkbox4, checkbox5]
         if checkbox1:

@@ -40,10 +40,10 @@ def check_password():
     # Password was entered and was correct
     else:
         return True
-    
+
 if check_password():
 
-    # open and read all four video files
+    # Open and read all five video files
     video_file1 = open("videos/Oaks.mp4", "rb")
     video_bytes1 = video_file1.read()
     video_file2 = open("videos/800IC.mp4", "rb")
@@ -52,30 +52,26 @@ if check_password():
     video_bytes3 = video_file3.read()
     video_file4 = open("videos/Sierra.mp4", "rb")
     video_bytes4 = video_file4.read()
-    video_file5 = open("videos/fakeVideo.mp4", "rb")
+    video_file5 = open("videos/FakeVideo.mp4", "rb")
     video_bytes5 = video_file5.read()
-    left_column, right_column = st.columns(2)
-    botLeft, botMid, botRight = st.columns(3)
 
-    # You can use a column just like st.sidebar
-    # Or even better, call Streamlit functions inside a "with" block:
-#    with right_column:
-#        chosen = st.radio(
-#            'Available Feeds',
-#            ("Feed 1", "Feed 2", "Feed 3", "Feed 4", "Feed 5"))
-#        st.write(f"You are in {chosen}")
+    # Save videos to a list
+    videos = [video_bytes1, video_bytes2, video_bytes3, video_bytes4, video_bytes5]
 
-    # Add sidebar with checkbox to show/hide videos:
+    # Set the display
+    upperLeftColumn, upperRightColumn = st.columns(2)
+    bottomLeft, bottomMid, bottomRight = st.columns(3)
+    columns = [upperLeftColumn, upperRightColumn, bottomLeft, bottomMid, bottomRight]
+
+    if 'count' not in st.session_state:
+        st.session_state.count = 0
+
+    def increment():
+        st.session_state.count += 1
+
+    # Add sidebar with a button to add videos:
     with st.sidebar:
-        if st.checkbox('Show Video 1'):
-            left_column.video(video_bytes1)
-        if st.checkbox('Show Video 2'):
-            right_column.video(video_bytes2)
-        if st.checkbox('Show Video 3'):
-            botLeft.video(video_bytes3)
-        if st.checkbox('Show Video 4'):
-            botMid.video(video_bytes4)
-        if st.checkbox('Show Video 5'):
-            botRight.video(video_bytes5)
-    
-
+        if st.button('Add a Video'):
+            for i in range(st.session_state.count + 1):
+                columns[i % 5].video(videos[i % 5])
+            increment()

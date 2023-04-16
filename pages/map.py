@@ -2,6 +2,8 @@ import streamlit as st
 import pydeck as pdk
 import os
 
+st.set_page_config(page_title="Map", layout="wide", initial_sidebar_state="expanded")
+
 # Import Mapbox API Key from environment
 MAPBOX_API_KEY = os.environ["MAPBOX_API_KEY"]
 # AWS Open Data Terrain Tiles

@@ -5,6 +5,8 @@ import pandas as pd
 import pydeck as pdk
 from django.contrib.auth import authenticate
 
+st.set_page_config(page_title="Videos", layout="wide", initial_sidebar_state="expanded")
+
 # django wsgi.py
 from django.core.wsgi import get_wsgi_application
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "config.settings")

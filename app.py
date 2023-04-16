@@ -66,16 +66,36 @@ if check_password():
 #        st.write(f"You are in {chosen}")
 
     # Add sidebar with checkbox to show/hide videos:
+
     with st.sidebar:
-        if st.checkbox('Show Video 1'):
+        st.write('### Controls')
+
+        checkbox1 = st.checkbox('Show Video 1', key = 'a')
+        checkbox2 = st.checkbox('Show Video 2', key = 'b')
+        checkbox3 = st.checkbox('Show Video 3', key = 'c')
+        checkbox4 = st.checkbox('Show Video 4', key = 'd')
+        checkbox5 = st.checkbox('Show Video 5', key = 'e')
+
+        st.write('### ')
+        def sel_callback():
+            st.session_state.a = st.session_state.sel
+            st.session_state.b = st.session_state.sel
+            st.session_state.c = st.session_state.sel
+            st.session_state.d = st.session_state.sel
+            st.session_state.e = st.session_state.sel
+
+        st.checkbox('Select All', key='sel', on_change=sel_callback)
+
+        box_list = [checkbox1, checkbox2, checkbox3, checkbox4, checkbox5]
+        if checkbox1:
             left_column.video(video_bytes1)
-        if st.checkbox('Show Video 2'):
+        if checkbox2:
             right_column.video(video_bytes2)
-        if st.checkbox('Show Video 3'):
+        if checkbox3:
             botLeft.video(video_bytes3)
-        if st.checkbox('Show Video 4'):
+        if checkbox4:
             botMid.video(video_bytes4)
-        if st.checkbox('Show Video 5'):
+        if checkbox5:
             botRight.video(video_bytes5)
-    
+       
 

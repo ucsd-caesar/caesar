@@ -20,29 +20,49 @@ SURFACE_IMAGE = f"https://api.mapbox.com/v4/mapbox.satellite/{{z}}/{{x}}/{{y}}@2
 
 START_LOCATION = [46.24, -122.18]
 
-@st.cache_data
-def load_map():
-    terrain_layer = pdk.Layer(
-        "TerrainLayer", 
-        elevation_decoder=ELEVATION_DECODER, 
-        texture=SURFACE_IMAGE, 
-        elevation_data=TERRAIN_IMAGE
-    )
-
-    view_state = pdk.ViewState(latitude=START_LOCATION[0], longitude=START_LOCATION[1],
-                                zoom=11.5, bearing=140, pitch=60)
-    r = pdk.Deck(terrain_layer, initial_view_state=view_state)
-    return r
-
 # random dataframe displayed on map
 map_data = pd.DataFrame(
-np.random.randn(1000, 2) / [50, 50] + START_LOCATION,
-columns=['lat', 'lon'])
+    np.random.randn(5, 2) / [50, 50] + START_LOCATION,
+    columns=['lat', 'lon'])
 
 # Folium map
 m = folium.Map(location=START_LOCATION, zoom_start=10)
 Draw(export=True).add_to(m)
+
+# add markers to Folium map
+@st.cache_data
+def add_markers(map_data):
+    for i in range(0, len(map_data)):
+        folium.Marker(location=[map_data.iloc[i]['lat'], map_data.iloc[i]['lon']],).add_to(m)
+
+folium.Marker(location=START_LOCATION,).add_to(m)
+
+# Display Folium map
 output = st_folium(m, width=700, height=500)
 
-# Pydeck map
+# load Pydeck map and add markers
+@st.cache_data
+def load_map():
+    layers = [
+        pdk.Layer(
+            "TerrainLayer", 
+            elevation_decoder=ELEVATION_DECODER, 
+            texture=SURFACE_IMAGE, 
+            elevation_data=TERRAIN_IMAGE
+        ),
+        pdk.Layer(
+            'HexagonLayer',
+            data=map_data,
+            get_position='[lon, lat]',
+            get_color='[200, 30, 0, 160]',
+            get_radius=200,
+        )
+    ]
+
+    view_state = pdk.ViewState(latitude=START_LOCATION[0], longitude=START_LOCATION[1],
+                                zoom=11.5, bearing=140, pitch=60)
+    r = pdk.Deck(layers, initial_view_state=view_state)
+    return r
+
+# Display Pydeck map
 st.pydeck_chart(load_map())

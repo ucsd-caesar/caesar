@@ -3,8 +3,10 @@ import pydeck as pdk
 import pandas as pd
 import numpy as np
 import os
+import videos
 import folium
 from folium.plugins import Draw
+
 
 from streamlit_folium import st_folium
 
@@ -29,6 +31,20 @@ START_LOCATION = [46.24, -122.18]
 m = folium.Map(location=START_LOCATION, zoom_start=10)
 fg = folium.FeatureGroup(name="Video Sources")
 
+# load video data
+video_file1 = open("videos/Oaks.mp4", "rb")
+stream1 = video_file1.read()
+video_file2 = open("videos/800IC.mp4", "rb")
+stream2 = video_file2.read()
+video_file3 = open("videos/Rices.mp4", "rb")
+stream3 = video_file3.read()
+video_file4 = open("videos/Sierra.mp4", "rb")
+stream4 = video_file4.read()
+video_file5 = open("videos/fakeVideo.mp4", "rb")
+stream5 = video_file5.read()
+
+streams = [stream1, stream2, stream3, stream4, stream5]
+
 def get_marker_locations():
     return pd.read_csv("map_data.csv")
 
@@ -36,7 +52,10 @@ def add_markers(data):
     """Add markers to folium map"""
     for location in data.itertuples():
         fg.add_child(
-            folium.Marker(location=[location.lat, location.lon], icon=folium.Icon(color='blue'))
+            folium.Marker(
+                location=[location.lat, location.lon],
+                icon=folium.Icon(color='blue'),
+                tooltip=location.name)
         )
 
 def add_icon_data(data):
@@ -44,6 +63,12 @@ def add_icon_data(data):
     data["icon_data"] = None
     for i in data.index:
         data["icon_data"][i] = ICON_DATA
+
+@st.cache_data
+def get_video_stream(str):
+    """get video stream from last clicked marker"""
+    id = int(str[6])
+    return streams[id-1]
 
 @st.cache_data
 def load_map():
@@ -78,14 +103,26 @@ def load_map():
 # read map data and add markers
 add_markers(get_marker_locations())
 
+top_row = st.empty() # Create empty container for map display and video player
+
 # Display Folium map
-Draw(export=True).add_to(m)
-output = st_folium(
-    m, 
-    feature_group_to_add=fg,
-    width = 800, 
-    height=400
-)
+with top_row.container():
+    c1, c2 = st.columns(2)
+
+    with c1:
+        Draw(export=True).add_to(m)
+        output = st_folium(
+            m, 
+            feature_group_to_add=fg,
+            width = 800, 
+            height=400
+        )
+    with c2:
+        stream_name = output["last_object_clicked_tooltip"]
+        if stream_name:
+            st.video(get_video_stream(stream_name))
+            
+        
 
 # Display Pydeck map
 st.pydeck_chart(load_map())

@@ -3,7 +3,7 @@ version: '4.18'
 services:
   web:
     build: .
-    command: python manage.py runserver
+    command: python manage.py runserver 0.0.0.0:8000
     volumes:
       - .:/code
     ports:
@@ -19,8 +19,11 @@ services:
       - POSTGRES_DB=postgres
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgres
+      - ALLOW_IP_RANGE=0.0.0.0/0
+      - RUN_AS_ROOT=true
     ports:
       - 5432:5432
+    restart: on-failure
 
 volumes:
   postgres_data:

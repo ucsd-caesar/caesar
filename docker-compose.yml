@@ -5,4 +5,14 @@ services:
     build: .
     ports:
       - 8501:8501
-    command: streamlit run app.py --server.port=8501 --server.address=0.0.0.0
+    command:
+
+  db:
+    image: postgres
+    environment:
+      POSTGRES_PASSWORD: password
+      POSTGRES_USER: user
+      POSTGRES_DB: map
+      ALLOW_IP_RANGE: 0.0.0.0
+    ports:
+      - 5432:5432

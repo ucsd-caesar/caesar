@@ -10,15 +10,17 @@ services:
       - 8000:8000
     depends_on:
       - db
+    restart: on-failure
 
   db:
-    image: postgres
+    image: postgis/postgis
     volumes:
       - postgres_data:/var/lib/postgresql/data/
     environment:
       - POSTGRES_DB=postgres
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgres
+      - POSTGRES_MULTIPLE_EXTENSIONS=postgis,hstore,postgis_topology,postgis_raster,pgrouting
       - ALLOW_IP_RANGE=0.0.0.0/0
       - RUN_AS_ROOT=true
     ports:

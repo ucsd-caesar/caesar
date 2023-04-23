@@ -1,56 +1,32 @@
+var mapChoiceSelect = document.getElementById('map-type');
+var mapChoice = mapChoiceSelect.options[mapChoiceSelect.selectedIndex].value;
 
-var map = new mapboxgl.Map({
-    container: 'map',
-    style: 'mapbox://styles/mapbox/streets-v11',
-    center: [32.8785655,-117.2330362],
-    zoom: 14
-})
-L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+var map = L.map('map').setView([32.8785655,-117.2330362], 14);
+var tileLayer = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
     maxZoom: 19,
     attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
 }).addTo(map);
 
-const container = document.getElementById('deck-container');
-const jsonInput = {
-"initialViewState": {
-"bearing": 140,
-"latitude": 46.24,
-"longitude": -122.18,
-"pitch": 60,
-"zoom": 11.5
-},
-"layers": [
-{
-  "@@type": "TerrainLayer",
-  "elevationData": "https://s3.amazonaws.com/elevation-tiles-prod/terrarium/{z}/{x}/{y}.png",
-  "elevationDecoder": {
-    "bScaler": 0.00390625,
-    "gScaler": 1,
-    "offset": -32768,
-    "rScaler": 256
-  },
-  "id": "d391d7ad-ee47-4331-89de-3ce9a0e598d5",
-  "texture": "https://api.mapbox.com/v4/mapbox.satellite/{z}/{x}/{y}@2x.png?access_token="
-}
-],
-"mapProvider": "carto",
-"mapStyle": "https://basemaps.cartocdn.com/gl/dark-matter-gl-style/style.json",
-"mapboxKey": "",
-"views": [
-{
-  "@@type": "MapView",
-  "controller": true
-}
-]
-};
-const tooltip = true;
-const customLibraries = null;
-const configuration = null;
-
-const deckInstance = createDeck({
-              container,
-  jsonInput,
-  tooltip,
-  customLibraries,
-  configuration
+document.getElementById('map-type').addEventListener('change', function() {
+  var selectedMapType = this.value;
+  switch (selectedMapType) {
+    case 'osm':
+      tileLayer.setUrl('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png');
+      tileLayer.setAttribution('Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors');
+      break;
+    case 'mapbox-streets':
+      tileLayer.setUrl('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token=' + mapboxAccessToken);
+      tileLayer.setAttribution('Map data &copy; <a href="https://www.mapbox.com/">Mapbox</a> contributors');
+      tileLayer.options.id = 'mapbox/streets-v11';
+      break;
+    case 'mapbox-satellite':
+      tileLayer.setUrl('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token=' + mapboxAccessToken);
+      tileLayer.setAttribution('Map data &copy; <a href="https://www.mapbox.com/">Mapbox</a> contributors');
+      tileLayer.options.id = 'mapbox/satellite-v9';
+      break;
+    case 'esri-worldimagery':
+      tileLayer.setUrl('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}');
+      tileLayer.setAttribution('Map data &copy; <a href="https://www.esri.com/en-us/home">Esri</a>');
+      break;
+  }
 });

@@ -35,7 +35,7 @@ DEBUG = True
 MAPBOX_API_KEY = os.environ.get("MAPBOX_API_KEY")
 
 # ALLOWED_HOSTS = [os.environ.get("DJANGO_ALLOWED_HOSTS").split(" ")] not working
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['www.kleinfourlabs.com']
 
 # Application definition
 

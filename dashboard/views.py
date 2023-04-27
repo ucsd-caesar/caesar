@@ -1,9 +1,11 @@
-from django.shortcuts import render, get_object_or_404
-from django.template import loader
+from django.shortcuts import render
 from django.views import generic
 from django.views.generic.base import TemplateView
 from dotenv import load_dotenv
-from .models import MapChoice
+from rest_framework.response import Response
+from .models import *
+from .serializers import *
+
 import os
 
 load_dotenv() # load environment variables from .env file
@@ -15,4 +17,3 @@ class DashboardView(generic.ListView):
     
     def get_queryset(self):
         return MapChoice.objects.all()
-    

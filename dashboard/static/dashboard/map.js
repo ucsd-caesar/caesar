@@ -1,3 +1,5 @@
+const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+
 var mapChoiceSelect = document.getElementById('map-type');
 var mapChoice = mapChoiceSelect.options[mapChoiceSelect.selectedIndex].value;
 
@@ -38,27 +40,41 @@ map.on("moveend", () => renderMarkers());
 
 // POST data to database
 async function postData(url = "", data = {}) {
-  const response = await fetch(url, {
-    method: "POST",
-    mode: "cors",
-    cache: "no-cache",
-    credentials: "include",
-    headers: {
-        "Content-Type": "application/json",
+  $.ajax({
+    url: url,
+    data: data,
+    contentType: 'application/json;',
+    dataType: 'Feature',
+    type: 'POST',
+    beforeSend: function (xhr) {
+      xhr.setRequestHeader("X-CSRFToken", csrftoken);
     },
-    redirect: "follow",
-    referrerPolicy: "no-referrer",
-    body: JSON.stringify(data),
+    success: function (data) {
+      console.log(data);
+    },
+    failure: function(errMsg) {
+      alert(errMsg);
+    }
   });
-  return response.json();
 }
 
+var numMarkers = 0;
 // when a drawing is created, add to map and save to database
 map.on(L.Draw.Event.CREATED, function (e) {
   var type = e.layerType,
-      layer = e.layer,
-      data = layer.toGeoJSON();
-  
+      layer = e.layer;
+
+  var data = layer.toGeoJSON();
+  numMarkers++;
+  data.id = 3;
+  data.properties.name = "Test";
+
+  var jsonStr = '{"type":"FeatureCollection","features":[]}';
+  var obj = JSON.parse(jsonStr);
+  obj.features.push(data);
+  console.log(obj);
+  geojson = loadMarkers();
+  console.log(geojson);
   layer.addTo(map);
-  postData("/api/markers/", data);
+  postData("/api/markers/", obj);
 });

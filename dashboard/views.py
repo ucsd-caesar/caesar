@@ -11,9 +11,10 @@ import os
 load_dotenv() # load environment variables from .env file
 
 class DashboardView(generic.ListView):
-    model = MapChoice
+    model = Camera
     template_name = "dashboard/map.html"
-    context_object_name = "map_choices"
+    context_object_name = "cameras"
     
     def get_queryset(self):
-        return MapChoice.objects.all()
+        return Camera.objects.all()
+    

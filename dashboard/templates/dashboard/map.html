@@ -23,7 +23,8 @@
     <script src="{% static 'dashboard/jquery.js' %}"></script>
   </head>
   <body>
-    <!-- Header -->
+
+  <!-- Header -->
   <header>
     <div class="dropdown">
     </div>
@@ -32,56 +33,81 @@
   <!-- Main Content -->
   <main>
     <div class="container">
+
+      <!-- left section -->
       <div class="left-section">
-        
+        <h3>Live Image Feeds</h3>
+        <div class="filter-content">
+          {% for camera in cameras %}
+            <div class="filter-option">
+              <input type="checkbox" class="camera-checkbox" checked>
+              <label for="camera-checkbox">{{ camera.name }}</label>
+            </div>
+          {% endfor %}
+        </div>
       </div>
 
+      <!-- middle section -->
       <div class="middle-section">
         <div id="map" data-mapbox-api-key="{{ MAPBOX_API_KEY }}">
         </div>
         <script src="{% static 'dashboard/map.js' %}" defer></script>
       </div>
 
+      <!-- middle section script-->
+      <script>
+
+      </script>
+
+      <!-- right section-->
       <div class="right-section" id="panel">
         <div class="resize-handle"></div>
-        <div class="img-container">
-          <img class="live-img" src="https://hpwren.ucsd.edu/cameras/L/bm-n-mobo-c.jpg"/>
-          <img class="live-img" src="https://hpwren.ucsd.edu/cameras/L/sjh-e-mobo-c.jpg"/>
-          <img class="live-img" src="https://hpwren.ucsd.edu/cameras/L/bi-n-mobo-c.jpg"/>
-          <img class="live-img" src="https://hpwren.ucsd.edu/cameras/L/buff-n-mobo-c.jpg"/>
-          <img class="live-img" src="https://hpwren.ucsd.edu/cameras/L/ch-n-mobo-c.jpg"/>
-          <img class="live-img" src="https://hpwren.ucsd.edu/cameras/L/cp-n-mobo-c.jpg"/>
-        </div>
+        {% for camera in cameras %}
+          <div class="img-container">
+            <img class="live-img" src="{{ camera.source }}"/>
+          </div>
+        {% endfor %}
       </div>
 
+      <!-- right section script-->
       <script>
-        const sidePanel = document.querySelector('.right-section');
-        const resizeHandle = document.querySelector('.resize-handle');
-        let initialX, initialWidth;
-        
-        resizeHandle.addEventListener('mousedown', (e) => {
-          e.preventDefault();
-          initialX = e.clientX;
-          initialWidth = sidePanel.getBoundingClientRect().width;
-          document.addEventListener('mousemove', onMouseMove);
-          document.addEventListener('mouseup', onMouseUp);
-        });
-        
-        function onMouseMove(e) {
-          const container = sidePanel.parentElement.parentElement.parentElement;
-          const containerWidth = container.getBoundingClientRect().width;
-          const newWidth = initialWidth - e.clientX + initialX;
-        
-          if (newWidth < containerWidth && newWidth > 100) {
-            sidePanel.style.width = newWidth + 'px';
+        document.addEventListener('DOMContentLoaded', () => {
+          /* Reload live image feeds every minute */
+          var liveImgs = document.querySelectorAll('.live-img');
+          setInterval(() => {
+            liveImgs.forEach((img) => {
+              img.src = img.src.split('?')[0] + '?' + new Date().getTime();
+            })
+          }, 60000, liveImgs);
+
+          /* Let user resize the right panel */
+          const sidePanel = document.querySelector('.right-section');
+          const resizeHandle = document.querySelector('.resize-handle');
+          let initialX, initialWidth;
+          
+          resizeHandle.addEventListener('mousedown', (e) => {
+            e.preventDefault();
+            initialX = e.clientX;
+            initialWidth = sidePanel.getBoundingClientRect().width;
+            document.addEventListener('mousemove', onMouseMove);
+            document.addEventListener('mouseup', onMouseUp);
+          });
+          
+          function onMouseMove(e) {
+            const container = sidePanel.parentElement.parentElement.parentElement;
+            const containerWidth = container.getBoundingClientRect().width;
+            const newWidth = initialWidth - e.clientX + initialX;
+          
+            if (newWidth < containerWidth && newWidth > 100) {
+              sidePanel.style.width = newWidth + 'px';
+            }
           }
-        }
-        
-        function onMouseUp() {
-          document.removeEventListener('mousemove', onMouseMove);
-          document.removeEventListener('mouseup', onMouseUp);
-        }
-        
+          
+          function onMouseUp() {
+            document.removeEventListener('mousemove', onMouseMove);
+            document.removeEventListener('mouseup', onMouseUp);
+          }
+        }); 
       </script>
     </div>
   </main>

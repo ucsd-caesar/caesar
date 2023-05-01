@@ -1,8 +1,5 @@
 const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
 
-var mapChoiceSelect = document.getElementById('map-type');
-var mapChoice = mapChoiceSelect.options[mapChoiceSelect.selectedIndex].value;
-
 const basemaps = {
   OpenStreetMap: L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',   {attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'}),
   EsriWorldImagery: L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {attribution: '&copy; <a href="https://www.esri.com/en-us/home">Esri</a>'}),

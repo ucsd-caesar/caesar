@@ -110,11 +110,12 @@ transform: rotate(180deg);
 
 .right-section {
     height: 100%;
-    width: 35%;
-    display: flex;
+    width: 60%;
+    display: grid;
     box-sizing: border-box;
-    background-color: var(--panel-color);
+    background-color: var(--header-color);
     box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    overflow-y: auto;
 }
 
 .middle-section {
@@ -153,16 +154,15 @@ transform: rotate(180deg);
     position: relative;
     width: 5px;
     cursor: ew-resize;
-    background-color: transparent;
+    background-color: red;
     z-index: 1;
 }
 .img-container {
     width: 100%;
     height: 100%;
-    display: block;
     justify-content: center;
     align-items: center;
-    overflow-y: auto;
+    padding-left: 5px;
 }
 
 img {

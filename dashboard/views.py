@@ -17,3 +17,6 @@ class DashboardView(generic.ListView):
     
     def get_queryset(self):
         return MapChoice.objects.all()
+    
+def stream(request):
+    return render(request, 'dashboard/stream.html')

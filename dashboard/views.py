@@ -20,3 +20,6 @@ class DashboardView(generic.ListView):
     
 def stream(request):
     return render(request, 'dashboard/stream.html')
+
+class LoginView(TemplateView):
+    template_name = "dashboard/login.html"

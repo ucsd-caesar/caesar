@@ -1,0 +1,14 @@
+@import "bootstrap/bootstrap.min.css";
+
+html, body, main {
+    height: 100%;
+    margin: 0;
+    display: block;
+}
+
+.form-signin {
+    max-width: 630px;
+    padding: 100px;
+    margin: 0 auto;
+    height: 100%;
+}

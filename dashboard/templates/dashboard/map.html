@@ -7,7 +7,7 @@
     <link rel="stylesheet" href="{% static 'dashboard/dashboard.css' %}"> 
 
     {% csrf_token %}
-    
+
     <!-- Leaflet -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.3/dist/leaflet.css"
     integrity="sha256-kLaT2GOSpHechhsozzB+flnD+zUyjE2LlfWPgU04xyI="
@@ -25,66 +25,97 @@
   </head>
   <body>
     <!-- Header -->
-  <header>
-    <div class="dropdown">
+  <header class="p-3 text-bg-dark">
+    <div class="d-flex flex-wrap align-items-right justify-content-center justify-content-lg-start">
     </div>
   </header>
 
   <!-- Main Content -->
-  <main>
-    <div class="container">
-      <div class="left-section">
-        
+  <main class="d-flex flex-nowrap">
+    <div id="sidebar" class="d-flex flex-column flex-shrink-0 p-3 text-bg-dark">
+      <div id="channel-container">
       </div>
-
-      <div class="middle-section">
-        <div id="map" data-mapbox-api-key="{{ MAPBOX_API_KEY }}">
-        </div>
-        <script src="{% static 'dashboard/map.js' %}" defer></script>
-      </div>
-
-      <div class="right-section" id="panel">
-        <div class="resize-handle"></div>
-        <div class="img-container">
-          <img class="live-img" src="https://hpwren.ucsd.edu/cameras/L/bm-n-mobo-c.jpg"/>
-          <img class="live-img" src="https://hpwren.ucsd.edu/cameras/L/sjh-e-mobo-c.jpg"/>
-          <img class="live-img" src="https://hpwren.ucsd.edu/cameras/L/bi-n-mobo-c.jpg"/>
-          <img class="live-img" src="https://hpwren.ucsd.edu/cameras/L/buff-n-mobo-c.jpg"/>
-          <img class="live-img" src="https://hpwren.ucsd.edu/cameras/L/ch-n-mobo-c.jpg"/>
-          <img class="live-img" src="https://hpwren.ucsd.edu/cameras/L/cp-n-mobo-c.jpg"/>
-        </div>
-      </div>
-
-      <script>
-        const sidePanel = document.querySelector('.right-section');
-        const resizeHandle = document.querySelector('.resize-handle');
-        let initialX, initialWidth;
-        
-        resizeHandle.addEventListener('mousedown', (e) => {
-          e.preventDefault();
-          initialX = e.clientX;
-          initialWidth = sidePanel.getBoundingClientRect().width;
-          document.addEventListener('mousemove', onMouseMove);
-          document.addEventListener('mouseup', onMouseUp);
-        });
-        
-        function onMouseMove(e) {
-          const container = sidePanel.parentElement.parentElement.parentElement;
-          const containerWidth = container.getBoundingClientRect().width;
-          const newWidth = initialWidth - e.clientX + initialX;
-        
-          if (newWidth < containerWidth && newWidth > 100) {
-            sidePanel.style.width = newWidth + 'px';
-          }
-        }
-        
-        function onMouseUp() {
-          document.removeEventListener('mousemove', onMouseMove);
-          document.removeEventListener('mouseup', onMouseUp);
-        }
-        
-      </script>
     </div>
+
+    
+    <div id="page-split" class="cover-container d-flex">
+
+      <div id="left-section" class="container">
+        <section class="py-5 text-center container">
+          <form class="col-12 col-lg-auto mb-3 mb-lg-0 me-lg-3" role="search">
+            <input type="search" class="form-control form-control-light text-bg-light" placeholder="Search..." aria-label="Search">
+          </form>
+        </section>
+
+        <div class="album py-5">
+          <div class="container">
+            <div class="row row-cols-1 row-cols-sm-2 row-cols-md-2 g-2">
+              <!-- programmatically add results from databse in this format-->
+              <div class="col">
+                <div class="card">
+                  <svg class="bd-placeholder-img card-img-top" width="100%" height="225" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Placeholder: Thumbnail" preserveAspectRatio="xMidYMid slice" focusable="true" _mstaria-label="4468347" _mstHash="13" style="direction: ltr; text-align: left;">
+                    <title>Placeholder</title>
+                    <rect width="100%" height="100%" fill="#55595c"></rect>
+                    <text x="50%" y="50%" fill="#eceeef" dy=".3em">Thumbnail</text>
+                  </svg>
+                  <div class="card-body">
+                    <p class="card-text">Description of video</p>
+                    <div class="d-flex justify-content-between align-items-center">
+                      <small class="text-muted">CalFire</small>
+                      <div class="btn-group">
+                        <button type="button" class="btn btn-sm btn-outline-primary">Add</button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <!-- programmatically add results from databse in this format-->
+              <div class="col">
+                <div class="card">
+                  <svg class="bd-placeholder-img card-img-top" width="100%" height="225" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Placeholder: Thumbnail" preserveAspectRatio="xMidYMid slice" focusable="true" _mstaria-label="4468347" _mstHash="13" style="direction: ltr; text-align: left;">
+                    <title>Placeholder</title>
+                    <rect width="100%" height="100%" fill="#55595c"></rect>
+                    <text x="50%" y="50%" fill="#eceeef" dy=".3em">Thumbnail</text>
+                  </svg>
+                  <div class="card-body">
+                    <p class="card-text">Description of video</p>
+                    <div class="d-flex justify-content-between align-items-center">
+                      <small class="text-muted">California National Guard</small>
+                      <div class="btn-group">
+                        <button type="button" class="btn btn-sm btn-outline-primary">Add</button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div id="right-section" class="container-fill">
+        <div id="resize-handle"></div>
+        <div id="quilt">
+          <div class="display-container">
+            <div class="display-img">
+              <img class="live-img" src="https://cameras.alertcalifornia.org/public-camera-data/Axis-AlabamaHills1/latest-frame.jpg?rqts=1683215838">
+            </div>
+            <div class="live-info">
+              <div class="d-flex justify-content-between align-items-center">
+                <small class="text-muted">California National Guard</small>
+                <div class="btn-group">
+                  <button type="button" class="btn btn-sm btn-outline-secondary">Details</button>
+                  <button type="button" class="btn btn-sm btn-outline-danger">Remove</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+  
+    </div>
+    <script src="{% static 'dashboard/right-section.js' %}"></script>
   </main>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4" crossorigin="anonymous"></script>
   </body>
 </html>

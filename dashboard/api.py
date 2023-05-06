@@ -1,7 +1,9 @@
 from rest_framework import routers
-from .viewsets import MarkerViewSet
+from .viewsets import *
 
 router = routers.DefaultRouter()
 router.register(r"markers", MarkerViewSet, basename="marker")
+router.register(r"agencies", AgencyViewSet, basename="agency")
+router.register(r"user", UserViewSet, basename="user")
 
 urlpatterns = router.urls

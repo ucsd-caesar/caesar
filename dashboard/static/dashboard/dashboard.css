@@ -102,8 +102,16 @@ header {
     padding: 20px;
 }
 
-p {
+p, strong, small{
     color: var(--bs-light);
+}
+
+hr {
+    margin: 1rem 0;
+    color: var(--bg-light);
+    border: 0;
+    border-top: 1px solid;
+    opacity: .25;
 }
 
 /* Style the dropdown button */
@@ -160,7 +168,11 @@ transform: rotate(180deg);
 
 #sidebar {
     height: 100%;
-    width: min(20vw, 50px);
+    width: 280px;
+}
+
+.list-group-item {
+    background-color: transparent;
 }
 
 #resize-handle {
@@ -177,7 +189,7 @@ transform: rotate(180deg);
 #left-section {
     width: 100%;
     margin: 0 auto;
-    background-color: var(--bs-dark);
+    background-color: var(--bs-light);
     border-radius: 5px;
     box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }
@@ -190,6 +202,7 @@ transform: rotate(180deg);
     justify-content: center;
 }
 .card {
+    max-width: 350px;
     background: transparent;
     box-shadow: none;
     border: none;

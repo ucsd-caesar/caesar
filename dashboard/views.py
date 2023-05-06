@@ -1,4 +1,6 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
+from django.contrib import messages
+from django.contrib.auth.models import User
 from django.http import JsonResponse
 from django.views import generic
 from django.views.generic.base import TemplateView
@@ -7,23 +9,53 @@ from json import JSONDecodeError
 from rest_framework.parsers import JSONParser
 from rest_framework import views, status
 from rest_framework.response import Response
-from .models import *
+from .models import Agency, Livestream
 from .serializers import *
+from .forms import *
 
 import os
 
 load_dotenv() # load environment variables from .env file
 
 class DashboardView(generic.ListView):
-    model = MapChoice
     template_name = "dashboard/map.html"
-    context_object_name = "map_choices"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['agencies'] = Agency.objects.all()
+        context['users'] = User.objects.all()
+        context['livestreams'] = Livestream.objects.all()
+        return context
     
     def get_queryset(self):
         return MapChoice.objects.all()
     
 def stream(request):
     return render(request, 'dashboard/stream.html')
+
+def invite_user(request, agency_id):
+    agency = Agency.objects.get(pk=agency_id)
+
+    if request.method == 'POST':
+        form = InviteUserForm(request.POST)
+        if form.is_valid():
+            email = form.cleaned_data.get('email')
+            user = User.objects.get(email=email)
+            agency.members.add(user)
+            agency.save()
+            messages.success(request, f'User {user} invited to {agency.name}!')
+            return redirect('dashboard:agency_homepage', pk=agency_id)
+    else:
+        form = InviteUserForm()
+
+    return render(request, 'dashboard/invite_user.html', {'form': form, 'agency': agency})
+
+class AgencyView(generic.DetailView):
+    model = Agency
+    template_name = "dashboard/agency_homepage.html"
+
+class UserView(generic.DetailView):
+    template_name = "dashboard/user_homepage.html"
 
 class LoginView(TemplateView):
     template_name = "dashboard/login.html"

@@ -33,22 +33,38 @@
 
   <!-- Main Content -->
   <main class="d-flex flex-nowrap">
-    <div id="sidebar" class="d-flex flex-column flex-shrink-0 p-3 text-bg-dark">
-      <div id="channel-container">
-      </div>
+    <div id="sidebar" class="d-flex flex-column flex-shrink-0 p-1 text-bg-dark">
+      <ul class="nav nav-pills flex-column mb-auto">
+        <li class="nav-item">
+          <a href="/stream" class="nav-link">
+            Start Stream
+          </a>
+        </li>
+        <hr>
+        <div class="list-group list-group-flush border-bottom scrollarea">
+          {% for agency in agencies %}
+            <a href="/dashboard/agency/{{agency.id}}" class="list-group-item list-group-item-action py-3 lh-sm">
+              <div class="d-flex align-items-center justify-content-between">
+                <strong>{{ agency.name }}</strong>
+                <small>Live Now</small>
+              </div>
+            </a>
+          {% endfor %}
+        </div>
+      </ul>
     </div>
 
     
-    <div id="page-split" class="cover-container d-flex">
+    <div id="page-split" class="container-fluid d-flex">
 
-      <div id="left-section" class="container">
+      <div id="left-section" class="container-fluid">
         <section class="py-5 text-center container">
           <form class="col-12 col-lg-auto mb-3 mb-lg-0 me-lg-3" role="search">
             <input type="search" class="form-control form-control-light text-bg-light" placeholder="Search..." aria-label="Search">
           </form>
         </section>
 
-        <div class="album py-5">
+        <div class="album py-3">
           <div class="container">
             <div class="row row-cols-1 row-cols-sm-2 row-cols-md-2 g-2">
               <!-- programmatically add results from databse in this format-->
@@ -93,7 +109,7 @@
           </div>
         </div>
       </div>
-
+      <!--
       <div id="right-section" class="container-fill">
         <div id="resize-handle"></div>
         <div id="quilt">
@@ -113,7 +129,7 @@
           </div>
         </div>
       </div>
-  
+    -->
     </div>
     <script src="{% static 'dashboard/right-section.js' %}"></script>
   </main>

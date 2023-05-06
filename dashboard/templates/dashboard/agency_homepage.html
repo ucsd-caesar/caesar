@@ -1,0 +1,26 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title></title>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+    </head>
+    <body class="text-center">
+        <header class="p-3 text-bg-dark">
+            <div class="d-flex flex-row align-items-right justify-content-center justify-content-lg-start">
+              <a href="/dashboard/map" role="button" class="btn btn-sm btn-outline-light">Home</a>
+            </div>
+        </header>
+        <main class="form-signin w-100 m-auto">
+            <h1 class="h3 mb-3 fw-normal">{{ agency.name }}</h1>
+            <h2 class="h4 mb-3 fw-normal">Members</h2>
+            <a href="/dashboard/agency/{{ agency.id }}/invite" role="button" class="btn btn-sm btn-outline-light">Add Member</a>
+            <ul>
+                {% for member in agency.members.all %}
+                    <li>{{ member }}</li>
+                {% endfor %}
+            </ul>
+        </main>
+    </body>
+</html>

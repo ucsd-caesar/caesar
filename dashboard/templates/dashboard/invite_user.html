@@ -1,0 +1,26 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title></title>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+    </head>
+    <body class="text-center">
+        <header class="p-3 text-bg-dark">
+            <div class="d-flex flex-row align-items-right justify-content-center justify-content-lg-start">
+              <a href="/dashboard/map" role="button" class="btn btn-sm btn-outline-light">Home</a>
+            </div>
+        </header>
+        <main class="form-signin w-100 m-auto">
+            {% block content %}
+            <h2>Invite User to {{ agency.name }}</h2>
+            <form method="post">
+              {% csrf_token %}
+              {{ form.as_p }}
+              <button type="submit">Invite</button>
+            </form>
+          {% endblock %}
+        </main>
+    </body>
+</html>

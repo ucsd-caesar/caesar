@@ -1,0 +1,19 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title></title>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+    </head>
+    <body class="text-center">
+        <header class="p-3 text-bg-dark">
+            <div class="d-flex flex-row align-items-right justify-content-center justify-content-lg-start">
+              <a href="/dashboard/map" role="button" class="btn btn-sm btn-outline-light">Home</a>
+            </div>
+        </header>
+        <main class="form-signin w-100 m-auto">
+            <h1 class="h3 mb-3 fw-normal">{{ user.username }}</h1>
+        </main>
+    </body>
+</html>

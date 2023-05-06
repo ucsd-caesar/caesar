@@ -1,5 +1,7 @@
 from django.shortcuts import render, redirect
+from django.urls import reverse_lazy
 from django.contrib import messages
+from django.contrib.auth import views as auth_views
 from django.contrib.auth.models import User
 from django.http import JsonResponse
 from django.views import generic
@@ -55,10 +57,15 @@ class AgencyView(generic.DetailView):
     template_name = "dashboard/agency_homepage.html"
 
 class UserView(generic.DetailView):
-    template_name = "dashboard/user_homepage.html"
+    model = User
+    template_name = "dashboard/user_homepage.html" 
 
-class LoginView(TemplateView):
+class LoginView(auth_views.LoginView):
+    model = User
     template_name = "dashboard/login.html"
+
+    def get_success_url(self):
+        return reverse_lazy('dashboard:user', kwargs={'pk': self.request.user.pk})
 
 class UserAPIView(views.APIView):
     serializer_class = UserSerializer

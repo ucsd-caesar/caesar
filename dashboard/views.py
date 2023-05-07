@@ -2,9 +2,10 @@ from django.shortcuts import render, redirect
 from django.urls import reverse_lazy
 from django.contrib import messages
 from django.contrib.auth import views as auth_views
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import JsonResponse
 from django.views import generic
-from django.views.generic.base import TemplateView
+from django.views.generic.edit import FormView
 from dotenv import load_dotenv
 from json import JSONDecodeError
 from rest_framework.parsers import JSONParser
@@ -57,9 +58,27 @@ class AgencyView(generic.DetailView):
     model = Agency
     template_name = "dashboard/agency_homepage.html"
 
-class UserView(generic.DetailView):
+class UserView(LoginRequiredMixin, FormView):
     model = CustomUser
     template_name = "dashboard/user_homepage.html" 
+    form_class = SRTLinkForm
+    # make success_url stay on the same page
+    def get_success_url(self):
+        return reverse_lazy('dashboard:user', kwargs={'pk': self.request.user.pk})
+
+    def form_valid(self, form):
+        title = form.cleaned_data.get('title')
+        srt_link = form.cleaned_data.get('srt_link')
+        agency = form.cleaned_data.get('agency')
+
+        # create a new livestream instance
+        livestream = Livestream.objects.create(title=title, source=srt_link, agency=agency, created_by=self.request.user)
+
+        # add the livestream to the CustomUser's livestreams
+        self.request.user.livestreams.add(livestream)
+        self.request.user.save()
+
+        return super().form_valid(form)
 
 class LoginView(auth_views.LoginView):
     model = CustomUser

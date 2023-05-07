@@ -13,8 +13,17 @@
               <a href="/dashboard/map" role="button" class="btn btn-sm btn-outline-light">Home</a>
             </div>
         </header>
-        <main class="form-signin w-100 m-auto">
-            <h1 class="h3 mb-3 fw-normal">{{ user.username }}</h1>
+        <main class="container">
+            <section class="py-5 container">
+                <h1 class="h3 mb-3 ">{{ user.username }}</h1>
+                <form method="post" action="">
+                    {% csrf_token %}
+                    <div class="container d-flex">
+                    {{ form.as_p }}
+                    <button class="btn btn-lg btn-primary" type="submit">Stream</button>
+                    </div>
+                </form>
+            </section>
         </main>
     </body>
 </html>

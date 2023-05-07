@@ -28,13 +28,32 @@
                 <div class="container d-flex">
                     <select id="livestream-select" class="form-select">
                         <option selected disabled>Open this select menu</option>
-                        {% for stream in user.livestreams.all %}
+                        {% for stream in user.created_livestreams.all %}
                             <option value="{{ stream.id }}" data-livestream-id="{{ stream.id }}">{{ stream.title }}</option>
                         {% endfor %}
                     </select>
                     <button id="stopstream-btn" class="btn btn-lg btn-danger" type="submit">Stop</button>
                 </div>
             </section>
+            <div id="quilt" class="container-fluid">      
+                {% for stream in user.created_livestreams.all %}
+                    <div class="display-container">
+                        <div class="display-img">
+                            <img class="live-img" src="{{ stream.source }}">
+                        </div>
+                        <div class="display-info">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <p class="card-text">{{ stream.title }}</p>
+                                <p>{{ stream.agency }}</p>
+                                <div class="btn-group">
+                                    <button class="btn btn-sm btn-outline-dark">View</button>
+                                    <button class="btn btn-sm btn-outline-danger">Remove</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
         </main>
         <script>
             const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;

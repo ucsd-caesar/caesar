@@ -58,9 +58,9 @@ class UserAdmin(BaseUserAdmin):
     list_filter = ('is_admin',)
     fieldsets = (
         (None, {'fields': ('username', 'email', 'password')}),
-        ('Livestreams', {'fields': ('livestreams',)}),
         ('Permissions', {'fields': ('is_admin',)}),
     )
+    readonly_fields = ('created_livestreams',)
     # add_fieldsets is not a standard ModelAdmin attribute
     # UserAdmin overrides get_fieldsets to use this attribute when creating a user
     add_fieldsets = (

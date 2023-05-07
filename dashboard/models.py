@@ -74,7 +74,6 @@ class CustomUserManager(BaseUserManager):
 class CustomUser(AbstractBaseUser):
     username = models.CharField(max_length=255, unique=False)
     email = models.EmailField(max_length=255, unique=True)
-    livestreams = models.ManyToManyField(Livestream, related_name='livestreams')
 
     is_admin = models.BooleanField(default=False)
     is_active = models.BooleanField(default=True)

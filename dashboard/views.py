@@ -62,6 +62,12 @@ class UserView(LoginRequiredMixin, FormView):
     model = CustomUser
     template_name = "dashboard/user_homepage.html" 
     form_class = SRTLinkForm
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['user'] = self.request.user
+        return context
+
     # make success_url stay on the same page
     def get_success_url(self):
         return reverse_lazy('dashboard:user', kwargs={'pk': self.request.user.pk})
@@ -75,7 +81,7 @@ class UserView(LoginRequiredMixin, FormView):
         livestream = Livestream.objects.create(title=title, source=srt_link, agency=agency, created_by=self.request.user)
 
         # add the livestream to the CustomUser's livestreams
-        self.request.user.livestreams.add(livestream)
+        self.request.user.created_livestreams.add(livestream)
         self.request.user.save()
 
         return super().form_valid(form)
@@ -85,7 +91,7 @@ class StopStreamView(LoginRequiredMixin, generic.DetailView):
         livestream_id = request.POST.get('livestream_id')
         try:
             livestream = Livestream.objects.get(pk=livestream_id)
-            if livestream in request.user.livestreams.all():
+            if livestream in request.user.created_livestreams.all():
                 livestream.delete()
                 return JsonResponse({"status": "success"}, status=200)
             else:

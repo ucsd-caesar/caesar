@@ -10,14 +10,15 @@ class MarkerSerializer(serializers.GeoFeatureModelSerializer):
 class AgencySerializer(serializers.ModelSerializer):
     class Meta:
         model = Agency
-        fields = ("name",)
-
-class CustomUserSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = CustomUser
-        fields = ("username", "email", "is_admin", "livestreams")
+        fields = ("name","members")
 
 class LivestreamSerializer(serializers.ModelSerializer):
     class Meta:
         model = Livestream
-        fields = ("title", "source", "agency", "created_by")
+        fields = ("id", "title", "source", "agency")
+
+class CustomUserSerializer(serializers.ModelSerializer):
+    created_livestreams = LivestreamSerializer(many=True, read_only=True)
+    class Meta:
+        model = CustomUser
+        fields = ("username", "email", "is_admin", "created_livestreams")

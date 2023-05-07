@@ -28,7 +28,7 @@
     <!-- Header -->
   <header class="p-3 text-bg-dark">
     <div class="d-flex flex-row-reverse align-items-right justify-content-center justify-content-lg-start">
-      <a href="/dashboard/login" role="button" class="btn btn-sm btn-outline-light">Login</a>
+      <button id="login-btn" role="button" class="btn btn-sm btn-outline-light">Login</button>
     </div>
   </header>
 
@@ -101,6 +101,12 @@
     </div>
     <script src="{% static 'dashboard/right-section.js' %}"></script>
   </main>
+  <script src="{% static 'dashboard/session.js' %}"></script>
+  <script>
+    const isAuthenticated = {{ is_authenticated|yesno:"true,false" }};
+    const user_id = "{{ user.id }}";
+    updateLoginBtn(isAuthenticated, user_id);
+  </script>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4" crossorigin="anonymous"></script>
   </body>
 </html>

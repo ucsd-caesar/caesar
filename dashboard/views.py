@@ -26,6 +26,8 @@ class DashboardView(generic.ListView):
         context['agencies'] = Agency.objects.all()
         context['users'] = CustomUser.objects.all()
         context['livestreams'] = Livestream.objects.all()
+        context['is_authenticated'] = self.request.user.is_authenticated
+        context['username'] = self.request.user.username if self.request.user.is_authenticated else ''
         return context
     
     def get_queryset(self):

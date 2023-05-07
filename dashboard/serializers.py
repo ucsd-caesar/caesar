@@ -12,7 +12,7 @@ class AgencySerializer(serializers.ModelSerializer):
         model = Agency
         fields = ("name",)
 
-class UserSerializer(serializers.ModelSerializer):
+class CustomUserSerializer(serializers.ModelSerializer):
     class Meta:
-        model = User
-        fields = ("name", "agency", "email")
+        model = CustomUser
+        fields = ("username", "email")

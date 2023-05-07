@@ -18,6 +18,6 @@ class AgencyViewSet(viewsets.ModelViewSet):
     permission_classes = []
 
 class UserViewSet(viewsets.ModelViewSet):
-    queryset = User.objects.all()
-    serializer_class = UserSerializer
+    queryset = CustomUser.objects.all()
+    serializer_class = CustomUserSerializer
     permission_classes = []

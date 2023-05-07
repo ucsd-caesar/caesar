@@ -2,7 +2,6 @@ from django.shortcuts import render, redirect
 from django.urls import reverse_lazy
 from django.contrib import messages
 from django.contrib.auth import views as auth_views
-from django.contrib.auth.models import User
 from django.http import JsonResponse
 from django.views import generic
 from django.views.generic.base import TemplateView
@@ -11,7 +10,7 @@ from json import JSONDecodeError
 from rest_framework.parsers import JSONParser
 from rest_framework import views, status
 from rest_framework.response import Response
-from .models import Agency, Livestream
+from .models import Agency, Livestream, CustomUser
 from .serializers import *
 from .forms import *
 
@@ -25,7 +24,7 @@ class DashboardView(generic.ListView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['agencies'] = Agency.objects.all()
-        context['users'] = User.objects.all()
+        context['users'] = CustomUser.objects.all()
         context['livestreams'] = Livestream.objects.all()
         return context
     
@@ -42,7 +41,7 @@ def invite_user(request, agency_id):
         form = InviteUserForm(request.POST)
         if form.is_valid():
             email = form.cleaned_data.get('email')
-            user = User.objects.get(email=email)
+            user = CustomUser.objects.get(email=email)
             agency.members.add(user)
             agency.save()
             messages.success(request, f'User {user} invited to {agency.name}!')
@@ -57,18 +56,18 @@ class AgencyView(generic.DetailView):
     template_name = "dashboard/agency_homepage.html"
 
 class UserView(generic.DetailView):
-    model = User
+    model = CustomUser
     template_name = "dashboard/user_homepage.html" 
 
 class LoginView(auth_views.LoginView):
-    model = User
+    model = CustomUser
     template_name = "dashboard/login.html"
 
     def get_success_url(self):
         return reverse_lazy('dashboard:user', kwargs={'pk': self.request.user.pk})
 
 class UserAPIView(views.APIView):
-    serializer_class = UserSerializer
+    serializer_class = CustomUserSerializer
 
     def get_serializer_context(self):
         return {
@@ -84,7 +83,7 @@ class UserAPIView(views.APIView):
     def post(self, request):
         try:
             data = JSONParser().parse(request)
-            serializer = UserSerializer(data=data)
+            serializer = CustomUserSerializer(data=data)
             if serializer.is_valid(raise_exception=True):
                 serializer.save()
                 return Response(serializer.data)

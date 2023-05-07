@@ -80,6 +80,19 @@ class UserView(LoginRequiredMixin, FormView):
 
         return super().form_valid(form)
 
+class StopStreamView(LoginRequiredMixin, generic.DetailView):
+    def post(self, request, *args, **kwargs):
+        livestream_id = request.POST.get('livestream_id')
+        try:
+            livestream = Livestream.objects.get(pk=livestream_id)
+            if livestream in request.user.livestreams.all():
+                livestream.delete()
+                return JsonResponse({"status": "success"}, status=200)
+            else:
+                return JsonResponse({"status": "error", "message": "Livestream not found in user's livestreams"}, status=404)
+        except Livestream.DoesNotExist:
+            return JsonResponse({"status": "error", "message": "Livestream not found"}, status=404)
+
 class LoginView(auth_views.LoginView):
     model = CustomUser
     template_name = "dashboard/login.html"

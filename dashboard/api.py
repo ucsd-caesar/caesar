@@ -5,5 +5,6 @@ router = routers.DefaultRouter()
 router.register(r"markers", MarkerViewSet, basename="marker")
 router.register(r"agencies", AgencyViewSet, basename="agency")
 router.register(r"user", UserViewSet, basename="user")
+router.register(r"livestreams", LivestreamViewSet, basename="livestream")
 
 urlpatterns = router.urls

@@ -1,4 +1,5 @@
 {% load static %}
+{% load custom_filters %}
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -52,11 +53,8 @@
           {% endfor %}
         </div>
       </ul>
-    </div>
-
-    
+    </div>    
     <div id="page-split" class="container-fluid d-flex">
-
       <div id="left-section" class="container-fluid">
         <section class="py-5 text-center container">
           <form class="col-12 col-lg-auto mb-3 mb-lg-0 me-lg-3" role="search">
@@ -66,70 +64,40 @@
 
         <div class="album py-3">
           <div class="container">
-            <div class="row row-cols-1 row-cols-sm-2 row-cols-md-2 g-2">
-              <!-- programmatically add results from databse in this format-->
-              <div class="col">
-                <div class="card">
-                  <svg class="bd-placeholder-img card-img-top" width="100%" height="225" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Placeholder: Thumbnail" preserveAspectRatio="xMidYMid slice" focusable="true" _mstaria-label="4468347" _mstHash="13" style="direction: ltr; text-align: left;">
-                    <title>Placeholder</title>
-                    <rect width="100%" height="100%" fill="#55595c"></rect>
-                    <text x="50%" y="50%" fill="#eceeef" dy=".3em">Thumbnail</text>
-                  </svg>
-                  <div class="card-body">
-                    <p class="card-text">Description of video</p>
-                    <div class="d-flex justify-content-between align-items-center">
-                      <small class="text-muted">CalFire</small>
-                      <div class="btn-group">
-                        <button type="button" class="btn btn-sm btn-outline-primary">Add</button>
+            <div class="row row-cols-1 row-cols-sm-1 row-cols-md-1 row-cols-lg-2 row-cols-xl-3 row-cols-xxl-4 g-3">
+              {% for stream in livestreams %}
+                <div class="col">
+                  <div class="card">
+                    {% with stream.source|replace_string:'latest-frame,latest-thumb' as thumbnail_url %}
+                      <img id="stream-{{ stream.id }}" src="{{ thumbnail_url }}" data-source="{{ stream.source }}" data-title="{{ stream.title }}" data-agency="{{ stream.agency }}" data-creator="{{ stream.created_by.username }}" class="card-img-top" focusable="true" _mstaria-label="4468347" _mstHash="13" style="direction: ltr; text-align: left;"/>
+                    {% endwith %}
+                    <div class="card-body">
+                      <p class="card-text">{{ stream.title }}</p>
+                      <div class="d-flex justify-content-between align-items-center">
+                        <strong>{{ stream.agency }}</strong>
+                        <small class="text-muted">{{ stream.created_by.username }}</small>
+                        <div class="btn-group">
+                          <a href="{{ stream.source }}" target="_blank" rel="noopener noreferrer" role="button" class="btn btn-sm btn-outline-secondary">View</a>
+                          <button data-button-id="{{ stream.id }}" class="addview-btn btn btn-sm btn-outline-primary">Add</button>
+                        </div>
                       </div>
                     </div>
                   </div>
                 </div>
-              </div>
-              <!-- programmatically add results from databse in this format-->
-              <div class="col">
-                <div class="card">
-                  <svg class="bd-placeholder-img card-img-top" width="100%" height="225" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Placeholder: Thumbnail" preserveAspectRatio="xMidYMid slice" focusable="true" _mstaria-label="4468347" _mstHash="13" style="direction: ltr; text-align: left;">
-                    <title>Placeholder</title>
-                    <rect width="100%" height="100%" fill="#55595c"></rect>
-                    <text x="50%" y="50%" fill="#eceeef" dy=".3em">Thumbnail</text>
-                  </svg>
-                  <div class="card-body">
-                    <p class="card-text">Description of video</p>
-                    <div class="d-flex justify-content-between align-items-center">
-                      <small class="text-muted">California National Guard</small>
-                      <div class="btn-group">
-                        <button type="button" class="btn btn-sm btn-outline-primary">Add</button>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
+              {% endfor %}
             </div>
           </div>
         </div>
       </div>
-      <!--
-      <div id="right-section" class="container-fill">
-        <div id="resize-handle"></div>
-        <div id="quilt">
-          <div class="display-container">
-            <div class="display-img">
-              <img class="live-img" src="https://cameras.alertcalifornia.org/public-camera-data/Axis-AlabamaHills1/latest-frame.jpg?rqts=1683215838">
-            </div>
-            <div class="live-info">
-              <div class="d-flex justify-content-between align-items-center">
-                <small class="text-muted">California National Guard</small>
-                <div class="btn-group">
-                  <button type="button" class="btn btn-sm btn-outline-secondary">Details</button>
-                  <button type="button" class="btn btn-sm btn-outline-danger">Remove</button>
-                </div>
-              </div>
-            </div>
-          </div>
+
+      <div id="right-section" class="container-fluid">
+        <div id="quilt" class="container-fluid">
+          <section class="py-2 text-right container">
+            <button id="expand-panel-btn" class="btn btn-sm btn-outline-secondary">Expand</button>
+          </section>
         </div>
       </div>
-    -->
+
     </div>
     <script src="{% static 'dashboard/right-section.js' %}"></script>
   </main>

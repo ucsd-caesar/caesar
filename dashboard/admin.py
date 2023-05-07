@@ -3,7 +3,7 @@ from django import forms
 from django.contrib.auth.models import Group
 from django.contrib.auth.forms import UserCreationForm, UserChangeForm, ReadOnlyPasswordHashField
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
-from .models import MapChoice, Marker, Agency, CustomUser
+from .models import MapChoice, Marker, Agency, Livestream, CustomUser
 from django.contrib.auth import get_user_model
 
 User = get_user_model()
@@ -11,6 +11,7 @@ User = get_user_model()
 admin.site.register(MapChoice)
 admin.site.register(Marker)
 admin.site.register(Agency)
+admin.site.register(Livestream)
 
 class CustomUserCreationForm(UserCreationForm):
 
@@ -57,6 +58,7 @@ class UserAdmin(BaseUserAdmin):
     list_filter = ('is_admin',)
     fieldsets = (
         (None, {'fields': ('username', 'email', 'password')}),
+        ('Livestreams', {'fields': ('livestreams',)}),
         ('Permissions', {'fields': ('is_admin',)}),
     )
     # add_fieldsets is not a standard ModelAdmin attribute

@@ -18,6 +18,8 @@ class Marker(models.Model):
     
 class Livestream(models.Model):
     title = models.CharField(max_length=255)
+    source = models.CharField(max_length=255, default='')
+    agency = models.ForeignKey('Agency', on_delete=models.CASCADE, related_name='livestreams', default=None, null=True)
     created_by = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='created_livestreams')
     
     def __str__(self):
@@ -72,6 +74,7 @@ class CustomUserManager(BaseUserManager):
 class CustomUser(AbstractBaseUser):
     username = models.CharField(max_length=255, unique=False)
     email = models.EmailField(max_length=255, unique=True)
+    livestreams = models.ManyToManyField(Livestream, related_name='livestreams')
 
     is_admin = models.BooleanField(default=False)
     is_active = models.BooleanField(default=True)

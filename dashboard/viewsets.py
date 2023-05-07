@@ -21,3 +21,8 @@ class UserViewSet(viewsets.ModelViewSet):
     queryset = CustomUser.objects.all()
     serializer_class = CustomUserSerializer
     permission_classes = []
+
+class LivestreamViewSet(viewsets.ModelViewSet):
+    queryset = Livestream.objects.all()
+    serializer_class = LivestreamSerializer
+    permission_classes = []

@@ -26,14 +26,17 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = os.environ.get("SECRET_KEY")
-
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
-
 ALLOWED_HOSTS = os.environ.get("DJANGO_ALLOWED_HOSTS").split(" ")
 
+# production settings
+DEBUG = False
+# DEBUG = True
 SESSION_COOKIE_SECURE = True
 CSRF_COOKIE_SECURE = True
+# assign gdal and osgeo library path
+GDAL_LIBRARY_PATH = "/home/gdal-3.6.4/build/libgdal.so.32"
+OSGEO_LIBRARY_PATH = "/home/geos-3.11.2/_build/lib/libgeos_c.so.1"
+
 
 # Application definition
 

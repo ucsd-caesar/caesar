@@ -6,10 +6,8 @@ from . import views
 app_name = "dashboard"
 
 urlpatterns = [
-    path("map/", views.DashboardView.as_view(), name="map"),
-    path("stream/", views.stream, name="stream"),
+    path("", views.DashboardView.as_view(), name="dashboard"),
     path("login/", views.LoginView.as_view(), name="login"),
-    path("user/", views.UserAPIView.as_view()),
     path("stop_stream/", views.StopStreamView.as_view(), name="stop_stream"),
     path("agency/<int:pk>/", views.AgencyView.as_view(), name="agency_homepage"),
     path("user/<int:pk>/", views.UserView.as_view(), name="user"),

@@ -10,24 +10,19 @@ class MarkerViewSet(viewsets.ModelViewSet):
     filter_backends = (filters.InBBoxFilter,)
     queryset = Marker.objects.all()
     serializer_class = MarkerSerializer
-    permission_classes = []
 
 class AgencyViewSet(viewsets.ModelViewSet):
     queryset = Agency.objects.all()
     serializer_class = AgencySerializer
-    permission_classes = []
 
 class UserViewSet(viewsets.ModelViewSet):
     queryset = CustomUser.objects.all()
     serializer_class = CustomUserSerializer
-    permission_classes = []
 
 class LivestreamViewSet(viewsets.ModelViewSet):
     queryset = Livestream.objects.all()
     serializer_class = LivestreamSerializer
-    permission_classes = []
 
 class ViewportViewSet(viewsets.ModelViewSet):
     queryset = Viewport.objects.all()
     serializer_class = ViewportSerializer
-    permission_classes = []

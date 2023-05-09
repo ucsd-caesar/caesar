@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect
-from django.urls import reverse_lazy
-from django.contrib import messages
+from django.urls import reverse_lazy, reverse
 from django.contrib.auth import views as auth_views
+from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import JsonResponse
 from django.views import generic, View
@@ -100,7 +100,7 @@ class UserView(LoginRequiredMixin, FormView):
 
     # make success_url stay on the same page
     def get_success_url(self):
-        return reverse_lazy('dashboard:user', kwargs={'pk': self.request.user.pk})
+        return reverse('dashboard')
 
     def form_valid(self, form):
         title = form.cleaned_data.get('title')
@@ -116,6 +116,14 @@ class UserView(LoginRequiredMixin, FormView):
 
         return super().form_valid(form)
 
+class LoginView(auth_views.LoginView):
+    model = CustomUser
+    template_name = "dashboard/login.html"
+
+    def get_success_url(self):
+        # redirect to /dashboard/
+        return reverse('dashboard:dashboard')
+    
 class StopStreamView(LoginRequiredMixin, generic.DetailView):
     def post(self, request, *args, **kwargs):
         livestream_id = request.POST.get('livestream_id')
@@ -129,14 +137,7 @@ class StopStreamView(LoginRequiredMixin, generic.DetailView):
         except Livestream.DoesNotExist:
             return JsonResponse({"status": "error", "message": "Livestream not found"}, status=404)
 
-class LoginView(auth_views.LoginView):
-    model = CustomUser
-    template_name = "dashboard/login.html"
-
-    def get_success_url(self):
-        return reverse_lazy('dashboard:user', kwargs={'pk': self.request.user.pk})
-
-class UserAPIView(views.APIView):
+class UserAPIView(LoginRequiredMixin, views.APIView):
     serializer_class = CustomUserSerializer
 
     def get_serializer_context(self):

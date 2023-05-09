@@ -29,13 +29,13 @@ SECRET_KEY = os.environ.get("SECRET_KEY")
 ALLOWED_HOSTS = os.environ.get("DJANGO_ALLOWED_HOSTS").split(" ")
 
 # production settings
-DEBUG = False
-# DEBUG = True
+# DEBUG = False
+DEBUG = True
 SESSION_COOKIE_SECURE = True
 CSRF_COOKIE_SECURE = True
 # assign gdal and osgeo library path
-GDAL_LIBRARY_PATH = "/home/ec2-user/gdal-3.6.4/build/libgdal.so.32"
-GEOS_LIBRARY_PATH = "/home/ec2-user/geos-3.11.2/_build/lib/libgeos_c.so.1"
+# GDAL_LIBRARY_PATH = "/home/ec2-user/gdal-3.6.4/build/libgdal.so.32"
+# GEOS_LIBRARY_PATH = "/home/ec2-user/geos-3.11.2/_build/lib/libgeos_c.so.1"
 
 
 # Application definition

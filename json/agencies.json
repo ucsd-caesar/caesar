@@ -1,1 +1,14 @@
-[{"name":"CalFire"},{"name":"SDG&E"},{"name":"PG&E"},{"name":"San Bernardino County Fire"}]
+[
+    {
+        "name": "CalFire"
+    },
+    {
+        "name": "SDG&E"
+    },
+    {
+        "name": "PG&E"
+    },
+    {
+        "name": "San Bernardino County Fire"
+    }
+]

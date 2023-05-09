@@ -45,8 +45,17 @@ document.addEventListener('DOMContentLoaded', () => {
             const liveImg = document.createElement('img');
             liveImg.classList.add('live-img');
             liveImg.src = image.getAttribute('data-source');
-            // add live-img to display-img div
-            displayImg.appendChild(liveImg);
+            // add link to view stream in new window
+            const viewBtn = document.createElement('a');
+            viewBtn.classList.add('thumbnail-btn', 'btn', 'p-0');
+            viewBtn.href = image.getAttribute('data-source');
+            viewBtn.target = '_blank';
+            viewBtn.rel = 'noopener noreferrer';
+            viewBtn.role = 'button';
+            // put image inside the link
+            viewBtn.appendChild(liveImg);
+            // add image to display-img div
+            displayImg.appendChild(viewBtn);
 
             // create div to hold stream info and a btn-group
             const infoContainer = document.createElement('div');
@@ -66,24 +75,15 @@ document.addEventListener('DOMContentLoaded', () => {
             infoContainer.appendChild(streamAgency);
             infoContainer.appendChild(streamCreator);
 
-            // create btn-group and view/remove buttons
+            // create btn-group
             const btnGroup = document.createElement('div');
             btnGroup.classList.add('btn-group');
-            const viewBtn = document.createElement('button')
-            viewBtn.classList.add('btn', 'btn-sm', 'btn-outline-secondary');
             const removeBtn = document.createElement('button');
             removeBtn.classList.add('btn', 'btn-sm', 'btn-outline-danger');
-            viewBtn.innerHTML = 'View';
             removeBtn.innerHTML = 'Remove';
-            btnGroup.appendChild(viewBtn);
             btnGroup.appendChild(removeBtn);
             infoContainer.appendChild(btnGroup);
 
-            // create listeners for view and remove buttons
-            viewBtn.addEventListener('click', () => {
-                // open new tab to liveimg.src
-                window.open(liveImg.src);
-            });
             removeBtn.addEventListener('click', () => {
                 // remove display-container from quilt
                 quilt.removeChild(displayContainer);

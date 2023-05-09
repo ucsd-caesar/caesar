@@ -206,6 +206,7 @@ transform: rotate(180deg);
     background: transparent;
     box-shadow: none;
     border: none;
+    padding: 0;
 }
 
 .card-body {
@@ -216,6 +217,10 @@ transform: rotate(180deg);
 
 .card-image-top {
     height: 100%;
+    width: 100%;
+}
+
+.addview-btn {
     width: 100%;
 }
 
@@ -258,12 +263,12 @@ transform: rotate(180deg);
     display: flex;
     justify-content: center;
     align-items: center;
-    background-color: gray;
 }
 
 .live-img {
     width: 100%;
     height: auto;
+    background-color: transparent;
 }
 
 .display-info {

@@ -15,7 +15,7 @@ class AgencySerializer(serializers.ModelSerializer):
 class LivestreamSerializer(serializers.ModelSerializer):
     class Meta:
         model = Livestream
-        fields = ("id", "title", "source", "agency")
+        fields = ("id", "title", "source", "agency", "created_by")
 
 class CustomUserSerializer(serializers.ModelSerializer):
     created_livestreams = LivestreamSerializer(many=True, read_only=True)

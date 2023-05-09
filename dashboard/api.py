@@ -6,5 +6,6 @@ router.register(r"markers", MarkerViewSet, basename="marker")
 router.register(r"agencies", AgencyViewSet, basename="agency")
 router.register(r"user", UserViewSet, basename="user")
 router.register(r"livestreams", LivestreamViewSet, basename="livestream")
+router.register(r"viewports", ViewportViewSet, basename="viewport")
 
 urlpatterns = router.urls

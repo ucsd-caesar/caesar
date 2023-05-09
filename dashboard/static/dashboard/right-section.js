@@ -3,31 +3,50 @@ const rightPanel = document.querySelector('#right-section');
 const resizeHandle = document.querySelector('#resize-handle');
 let initialX, initialLeftWidth, initialRightWidth;
 
+function setUserId(id) {
+    user_id = id;
+}
+
 document.addEventListener('DOMContentLoaded', () => {
     const addButtons = document.querySelectorAll('.addview-btn');
-    const expandPanelBtn = document.querySelector('#expand-panel-btn');
+    const resizePanelBtn = document.querySelector('#resize-panel-btn');
+    const resizePanelTxt = document.querySelector('#resize-panel-txt');
+
+    const openViewportBtn = document.querySelector('#open-viewport-btn');
+
+    const viewportStreams = []; // list of livestreams currently in viewport
 
     /* Clicking the Expand button expands the right-section to fill the viewport */
-    expandPanelBtn.addEventListener('click', onExpandBtn);
+    resizePanelBtn.addEventListener('click', onExpandBtn);
     function onExpandBtn() {
-        expandPanelBtn.addEventListener('click', onCollapseBtn);
-        expandPanelBtn.removeEventListener('click', onExpandBtn);
+        resizePanelBtn.addEventListener('click', onCollapseBtn);
+        resizePanelBtn.removeEventListener('click', onExpandBtn);
         leftPanel.style.display = 'none';
-        expandPanelBtn.innerHTML = 'Collapse';
-        // resize right-section to fill viewport
+        resizePanelTxt.innerHTML = 'Collapse Viewport';
+        resizePanelTxt.classList.remove('float-start');
+        resizePanelTxt.classList.add('float-end');
         rightPanel.style.width = '100%';
     }
+
     /* Clicking the Collapse button collapses the right-section to its original size */
     function onCollapseBtn() {
-        expandPanelBtn.addEventListener('click', onExpandBtn);
-        expandPanelBtn.removeEventListener('click', onCollapseBtn);
+        resizePanelBtn.addEventListener('click', onExpandBtn);
+        resizePanelBtn.removeEventListener('click', onCollapseBtn);
         leftPanel.style.display = 'block';
-        expandPanelBtn.innerHTML = 'Expand';
+        resizePanelTxt.innerHTML = 'Expand Viewport';
+        resizePanelTxt.classList.remove('float-end');
+        resizePanelTxt.classList.add('float-start');
         // resize right-section to original width
         rightPanel.style.width = 'min(300vw, 1000px)';
     }
 
-    
+    /* function to 
+    /* Clicking the Open Viewport button opens a new tab with all streams currently in viewport */
+    openViewportBtn.addEventListener('click', () => {
+        const url = `/dashboard/viewport/${user_id}`;
+        window.open(url);
+    });
+
     /* Clicking an Add button adds the stream to the right-section's viewport */
     addButtons.forEach((button) => {
         button.addEventListener('click', () => {
@@ -35,6 +54,10 @@ document.addEventListener('DOMContentLoaded', () => {
             const image = document.querySelector(`#stream-${buttonId}`);
             const quilt = document.querySelector('#quilt');
             
+            // save stream id to viewportStreams
+            const id = image.getAttribute('data-id');
+            viewportStreams.push(id);
+
             // create new display-img div and display-info div
             const displayImg = document.createElement('div');
             displayImg.classList.add('display-img');
@@ -87,6 +110,9 @@ document.addEventListener('DOMContentLoaded', () => {
             removeBtn.addEventListener('click', () => {
                 // remove display-container from quilt
                 quilt.removeChild(displayContainer);
+                // remove stream id from viewportStreams
+                const index = viewportStreams.indexOf(id);
+                viewportStreams.splice(index, 1);
             });
             
             // add infoContainer to displayInfo
@@ -94,7 +120,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
             // add displayImg and displayInfo to a display-container div
             const displayContainer = document.createElement('div');
-            displayContainer.classList.add('display-container');
+            displayContainer.classList.add('display-container', 'p-0', 'm-0');
             displayContainer.appendChild(displayImg);
             displayContainer.appendChild(displayInfo);
             
@@ -103,27 +129,3 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 });
-
-/* START RESIZE RIGHT-SECTION */
-/*
-resizeHandle.addEventListener('mousedown', (e) => {
-    e.preventDefault();
-    initialX = e.clientX;
-    initialLeftWidth = leftPanel.getBoundingClientRect().width;
-    initialRightWidth = rightPanel.getBoundingClientRect().width;
-    document.addEventListener('mousemove', onMouseMove);
-    document.addEventListener('mouseup', onMouseUp);
-});
-*/
-function onMouseMove(e) {
-    const container = leftPanel.parentElement;
-    const containerWidth = container.getBoundingClientRect().width;
-    const newRightWidth = initialRightWidth - e.clientX + initialX;
-
-    if (newRightWidth < containerWidth && newRightWidth > 0) {
-    rightPanel.style.width = newRightWidth + 'px';
-    leftPanel.style.width = containerWidth - newRightWidth + 'px';
-    }
-}
-
-/* END RESIZE RIGHT-SECTION */

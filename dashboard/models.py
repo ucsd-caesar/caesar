@@ -1,6 +1,7 @@
 from django.contrib.gis.db import models
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
 from django.conf import settings
+import uuid
 
 class MapChoice(models.Model):
     name = models.CharField(max_length=255)
@@ -24,6 +25,12 @@ class Livestream(models.Model):
     
     def __str__(self):
         return self.title
+    
+class Viewport(models.Model):
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='viewports')
+    livestreams = models.ManyToManyField(Livestream, related_name='viewports')
+    date_created = models.DateTimeField(auto_now_add=True)
+    time_created = models.TimeField(auto_now_add=True)
     
 class Agency(models.Model):
     name = models.CharField(max_length=255)

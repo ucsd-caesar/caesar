@@ -36,15 +36,9 @@
   <main class="d-flex flex-nowrap">
     <div id="sidebar" class="d-flex flex-column flex-shrink-0 p-1 text-bg-dark">
       <ul class="nav nav-pills flex-column mb-auto">
-        <li class="nav-item">
-          <a id="stream-btn" href="/dashboard/user/{{ user.id }}/stream" class="nav-link">
-            Start Stream
-          </a>
-        </li>
-        <hr>
         <div class="list-group list-group-flush border-bottom scrollarea">
           {% for agency in agencies %}
-            <a href="/dashboard/agency/{{agency.id}}" class="list-group-item list-group-item-action py-3 lh-sm">
+            <a href="/dashboard/agency/{{agency.id}}" class="list-group-item list-group-item-action list-group-item-secondary py-3 lh-sm">
               <div class="d-flex align-items-center justify-content-between">
                 <strong>{{ agency.name }}</strong>
                 <small>Live Now</small>
@@ -56,7 +50,7 @@
     </div>    
     <div id="page-split" class="container-fluid d-flex">
       <div id="left-section" class="container-fluid">
-        <section class="py-5 text-center container">
+        <section class="pt-2 pb-5 text-center container">
           <form class="col-12 col-lg-auto mb-3 mb-lg-0 me-lg-3" role="search">
             <input type="search" class="form-control form-control-light text-bg-light" placeholder="Search..." aria-label="Search">
           </form>
@@ -70,7 +64,7 @@
                   <div class="card">
                     {% with stream.source|replace_string:'latest-frame,latest-thumb' as thumbnail_url %}
                       <a href="{{ stream.source }}" class="thumbnail-btn btn p-0" target="_blank" rel="noopener noreferrer" role="button">
-                        <img id="stream-{{ stream.id }}" src="{{ thumbnail_url }}" data-source="{{ stream.source }}" data-title="{{ stream.title }}" data-agency="{{ stream.agency }}" data-creator="{{ stream.created_by.username }}" class="card-img-top" focusable="true" _mstaria-label="4468347" _mstHash="13" style="direction: ltr; text-align: left;"/>
+                        <img id="stream-{{ stream.id }}" src="{{ thumbnail_url }}" data-id="{{ stream.id }}" data-source="{{ stream.source }}" data-title="{{ stream.title }}" data-agency="{{ stream.agency }}" data-creator="{{ stream.created_by.username }}" class="card-img-top" focusable="true" _mstaria-label="4468347" _mstHash="13" style="direction: ltr; text-align: left;"/>
                       </a>
                     {% endwith %}
                     <div class="card-body d-flex flex-column p-0">
@@ -81,7 +75,7 @@
                         <small class="text-muted">{{ stream.created_by.username }}</small>
                       </div>
                       <div class="btn-group">
-                        <button data-button-id="{{ stream.id }}" class="addview-btn btn btn-sm btn-outline-primary">Add</button>
+                        <button data-button-id="{{ stream.id }}" class="addview-btn btn btn-sm btn-outline-primary">Add to Viewport</button>
                       </div>
                     </div>
                   </div>
@@ -92,16 +86,27 @@
         </div>
       </div>
 
-      <div id="right-section" class="container-fluid">
+      <div id="right-section" class="container-fluid row">
+        <ul class="nav nav-pills flex-column mb-2 p-0">
+          <div class="list-group">
+            <button type="button" id="resize-panel-btn" class="btn btn-secondary py-2">
+                <p id="resize-panel-txt" class="float-start">Expand Viewport</p>
+            </button>
+            <button type="button" id="open-viewport-btn" class="btn btn-secondary py-2">
+              <p class="float-start">Open Viewport in New Tab</p>
+            </button>
+          </div>
+        </ul>
         <div id="quilt" class="container-fluid">
-          <section class="py-2 text-right container">
-            <button id="expand-panel-btn" class="btn btn-sm btn-outline-secondary">Expand</button>
-          </section>
         </div>
       </div>
 
     </div>
     <script src="{% static 'dashboard/right-section.js' %}"></script>
+    <script>
+      let id = "{{ user.id }}";
+      setUserId(id);
+    </script>
   </main>
   <script src="{% static 'dashboard/session.js' %}"></script>
   <script>

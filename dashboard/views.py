@@ -4,7 +4,7 @@ from django.contrib import messages
 from django.contrib.auth import views as auth_views
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import JsonResponse
-from django.views import generic
+from django.views import generic, View
 from django.views.generic.edit import FormView
 from dotenv import load_dotenv
 from json import JSONDecodeError
@@ -57,6 +57,20 @@ def invite_user(request, agency_id):
 class AgencyView(generic.DetailView):
     model = Agency
     template_name = "dashboard/agency_homepage.html"
+
+class ViewportView(generic.DetailView):
+    model = Viewport
+    template_name = "dashboard/viewport.html"
+
+    # get the most recent viewport created by the user
+    def get_object(self):
+        return Viewport.objects.filter(user=self.request.user).latest('time_created')
+    
+    # return pk as the pk of the most recent viewport created by the user
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['pk'] = self.get_object().pk
+        return context
 
 class UserView(LoginRequiredMixin, FormView):
     model = CustomUser

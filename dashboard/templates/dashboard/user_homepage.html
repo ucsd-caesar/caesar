@@ -39,7 +39,9 @@
                 {% for stream in user.created_livestreams.all %}
                     <div class="display-container">
                         <div class="display-img">
-                            <img class="live-img" src="{{ stream.source }}">
+                            <a href="{{ stream.source }}" class="thumbnail-btn btn p-0" target="_blank" rel="noopener noreferrer" role="button">
+                                <img class="live-img" src="{{ stream.source }}">
+                            </a>
                         </div>
                         <div class="display-info">
                             <div class="d-flex justify-content-between align-items-center">

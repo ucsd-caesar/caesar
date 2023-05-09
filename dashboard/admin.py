@@ -3,7 +3,7 @@ from django import forms
 from django.contrib.auth.models import Group
 from django.contrib.auth.forms import UserCreationForm, UserChangeForm, ReadOnlyPasswordHashField
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
-from .models import MapChoice, Marker, Agency, Livestream, CustomUser
+from .models import MapChoice, Marker, Agency, Livestream, CustomUser, Viewport
 from django.contrib.auth import get_user_model
 
 User = get_user_model()
@@ -37,6 +37,12 @@ class CustomUserCreationForm(UserCreationForm):
         if commit:
             user.save()
         return user
+
+class ViewportAdmin(admin.ModelAdmin):
+    list_display = ('id', 'user', 'date_created', 'time_created')
+    readonly_fields = ('date_created', 'time_created', 'livestreams')
+
+admin.site.register(Viewport, ViewportAdmin)
 
 class CustomUserChangeForm(UserChangeForm):
 

@@ -13,5 +13,6 @@ urlpatterns = [
     path("stop_stream/", views.StopStreamView.as_view(), name="stop_stream"),
     path("agency/<int:pk>/", views.AgencyView.as_view(), name="agency_homepage"),
     path("user/<int:pk>/", views.UserView.as_view(), name="user"),
+    path("viewport/<int:pk>/", views.ViewportView.as_view(), name="viewport"),
     path("agency/<int:agency_id>/invite", views.invite_user, name="invite_user"),
 ]

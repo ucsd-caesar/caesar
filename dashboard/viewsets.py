@@ -26,3 +26,8 @@ class LivestreamViewSet(viewsets.ModelViewSet):
     queryset = Livestream.objects.all()
     serializer_class = LivestreamSerializer
     permission_classes = []
+
+class ViewportViewSet(viewsets.ModelViewSet):
+    queryset = Viewport.objects.all()
+    serializer_class = ViewportSerializer
+    permission_classes = []

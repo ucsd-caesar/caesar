@@ -22,3 +22,8 @@ class CustomUserSerializer(serializers.ModelSerializer):
     class Meta:
         model = CustomUser
         fields = ("username", "email", "is_admin", "created_livestreams")
+
+class ViewportSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Viewport
+        fields = ("id", "user", "livestreams", "date_created", "time_created")

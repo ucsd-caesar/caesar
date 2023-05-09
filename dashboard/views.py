@@ -54,6 +54,19 @@ def invite_user(request, agency_id):
 
     return render(request, 'dashboard/invite_user.html', {'form': form, 'agency': agency})
 
+def post_viewport(request):
+    if request.method == 'POST':
+        try:
+            data = JSONParser().parse(request)
+            serializer = ViewportSerializer(data=data)
+            if serializer.is_valid():
+                serializer.save()
+                return JsonResponse(serializer.data, status=status.HTTP_201_CREATED)
+            return JsonResponse(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        except JSONDecodeError:
+            return JsonResponse({"status": "error", "message": "No data provided"}, status=400)
+    return JsonResponse({"status": "error", "message": "Invalid request method"}, status=405)
+
 class AgencyView(generic.DetailView):
     model = Agency
     template_name = "dashboard/agency_homepage.html"
@@ -61,15 +74,18 @@ class AgencyView(generic.DetailView):
 class ViewportView(generic.DetailView):
     model = Viewport
     template_name = "dashboard/viewport.html"
-
+    
     # get the most recent viewport created by the user
     def get_object(self):
-        return Viewport.objects.filter(user=self.request.user).latest('time_created')
+        user_id = self.kwargs['user_id']
+        viewport_id = self.kwargs['viewport_id']
+        return Viewport.objects.filter(user__id=user_id, id=viewport_id).latest('time_created')
     
     # return pk as the pk of the most recent viewport created by the user
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['pk'] = self.get_object().pk
+        context['user_id'] = self.kwargs['user_id']
+        context['viewport_id'] = self.kwargs['viewport_id']
         return context
 
 class UserView(LoginRequiredMixin, FormView):

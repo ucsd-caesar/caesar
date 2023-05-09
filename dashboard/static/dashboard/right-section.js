@@ -3,6 +3,8 @@ const rightPanel = document.querySelector('#right-section');
 const resizeHandle = document.querySelector('#resize-handle');
 let initialX, initialLeftWidth, initialRightWidth;
 
+const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+
 function setUserId(id) {
     user_id = id;
 }
@@ -40,11 +42,28 @@ document.addEventListener('DOMContentLoaded', () => {
         rightPanel.style.width = 'min(300vw, 1000px)';
     }
 
-    /* function to 
+
     /* Clicking the Open Viewport button opens a new tab with all streams currently in viewport */
     openViewportBtn.addEventListener('click', () => {
-        const url = `/dashboard/viewport/${user_id}`;
-        window.open(url);
+        // create a new json with fields user: user_id, livestreams: viewportStreams
+        const data = {
+            user: user_id,
+            livestreams: viewportStreams
+        };
+        // send a POST request to /dashboard/viewport/post_viewport
+        fetch('/dashboard/viewport/post_viewport/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': csrftoken,
+            },
+            body: JSON.stringify(data),
+        }).then((response) => response.json()).then(data =>{
+            const viewport_id = data['id'];
+            // open a new tab at user's most recent viewport
+            const url = `/dashboard/viewport/${user_id}/${viewport_id}`;
+            window.open(url);
+        });
     });
 
     /* Clicking an Add button adds the stream to the right-section's viewport */

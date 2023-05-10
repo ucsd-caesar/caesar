@@ -8,9 +8,12 @@ from django.views import generic, View
 from django.views.generic.edit import FormView
 from dotenv import load_dotenv
 from json import JSONDecodeError
+from django.http import JsonResponse
+from django.core import serializers
 from rest_framework.parsers import JSONParser
 from rest_framework import views, status
 from rest_framework.response import Response
+from django.db.models import Q
 from .models import Agency, Livestream, CustomUser
 from .serializers import *
 from .forms import *
@@ -19,6 +22,20 @@ import os
 
 load_dotenv() # load environment variables from .env file
 
+class SearchView(View):
+    def get(self, request, *args, **kwargs):
+        query = request.GET.get('q', '')
+        if query:
+            search_results = Livestream.objects.filter(
+                Q(title__icontains=query) |
+                Q(agency__name__icontains=query) |
+                Q(created_by__username__icontains=query)
+            )
+            data = LivestreamSerializer(search_results, many=True).data
+        else:
+            data = LivestreamSerializer(Livestream.objects.all(), many=True).data
+        return JsonResponse(data, safe=False)
+    
 class DashboardView(generic.ListView):
     template_name = "dashboard/dashboard.html"
 
@@ -32,7 +49,7 @@ class DashboardView(generic.ListView):
         return context
     
     def get_queryset(self):
-        return MapChoice.objects.all()
+        return Livestream.objects.all()
 
 class StreamView(generic.TemplateView):
     template_name = "dashboard/stream.html"

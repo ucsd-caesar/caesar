@@ -7,6 +7,7 @@ app_name = "dashboard"
 
 urlpatterns = [
     path("", views.DashboardView.as_view(), name="dashboard"),
+    path('search/', views.SearchView.as_view(), name='search'),
     path("stream/", views.StreamView.as_view(), name="stream"),
     path("login/", views.LoginView.as_view(), name="login"),
     path("stop_stream/", views.StopStreamView.as_view(), name="stop_stream"),

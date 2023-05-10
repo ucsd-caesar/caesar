@@ -1,7 +1,8 @@
-from rest_framework_gis import serializers
+from rest_framework import serializers
+from rest_framework_gis.serializers import GeoFeatureModelSerializer
 from .models import *
 
-class MarkerSerializer(serializers.GeoFeatureModelSerializer):
+class MarkerSerializer(GeoFeatureModelSerializer):
     class Meta:
         model = Marker
         geo_field = "location"
@@ -13,9 +14,14 @@ class AgencySerializer(serializers.ModelSerializer):
         fields = ("name","members")
 
 class LivestreamSerializer(serializers.ModelSerializer):
+    agency = serializers.StringRelatedField()
+    created_by = serializers.SerializerMethodField()
     class Meta:
         model = Livestream
         fields = ("id", "title", "source", "agency", "created_by")
+
+    def get_created_by(self, obj):
+        return obj.created_by.username
 
 class CustomUserSerializer(serializers.ModelSerializer):
     created_livestreams = LivestreamSerializer(many=True, read_only=True)

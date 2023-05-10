@@ -55,14 +55,19 @@
     <div id="page-split" class="container-fluid d-flex">
       <div id="left-section" class="container-fluid">
         <section class="pt-2 pb-5 text-center container">
-          <form class="col-12 col-lg-auto mb-3 mb-lg-0 me-lg-3" role="search">
-            <input type="search" class="form-control form-control-light text-bg-light" placeholder="Search..." aria-label="Search">
+          <form id="search-form" class="col-12 col-lg-auto mb-3 mb-lg-0 me-lg-3" role="search">
+            <div class="btn-group py-2">
+              <input id="search-bar" type="search" class="form-control form-control-light text-bg-light" placeholder="Search..." aria-label="Search">
+              <button type="button" id="search-btn" class="btn btn-secondary py-2">
+                <p class="float-start">Search</p>
+              </button>
+            </div>
           </form>
-        </section>
+        </section>  
 
         <div class="album py-3">
           <div class="container">
-            <div class="row row-cols-1 row-cols-sm-1 row-cols-md-1 row-cols-lg-2 row-cols-xl-3 row-cols-xxl-4 g-3">
+            <div id="livestream-container" class="row row-cols-1 row-cols-sm-1 row-cols-md-1 row-cols-lg-2 row-cols-xl-3 row-cols-xxl-4 g-3">
               {% for stream in livestreams %}
                 <div class="col">
                   <div class="card">
@@ -121,6 +126,7 @@
       setUserId(id);
     </script>
   </main>
+  <script src="{% static 'dashboard/search.js' %}"></script>
   <script src="{% static 'dashboard/session.js' %}"></script>
   <script>
     const isAuthenticated = {{ is_authenticated|yesno:"true,false" }};

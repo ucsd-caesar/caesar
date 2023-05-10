@@ -96,10 +96,10 @@ function makeQuery() {
             let btnGroupDiv = document.createElement('div');
             btnGroupDiv.className = 'btn-group';
             cardBodyDiv.appendChild(btnGroupDiv);
-            //
+
             let buttonElement = document.createElement('button');
             buttonElement.className = 'addview-btn btn btn-sm btn-outline-primary';
-            buttonElement.dataset.buttonId = stream.id;
+            buttonElement.setAttribute('data-button-id', stream.id);
             buttonElement.textContent = 'Add to Viewport';
             btnGroupDiv.appendChild(buttonElement);
 
@@ -107,3 +107,5 @@ function makeQuery() {
         });
     });
 }
+
+

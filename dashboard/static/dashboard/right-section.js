@@ -8,6 +8,7 @@ const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
 function setUserId(id) {
     user_id = id;
 }
+const viewportStreams = []; // list of livestreams currently in viewport
 
 document.addEventListener('DOMContentLoaded', () => {
     const addButtons = document.querySelectorAll('.addview-btn');
@@ -17,7 +18,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const saveViewportBtn = document.querySelector('#open-viewport-btn');
     saveViewportBtn.display = 'none';
 
-    const viewportStreams = []; // list of livestreams currently in viewport
 
     // initialize right panel as hidden
     rightPanel.style.display = 'none';

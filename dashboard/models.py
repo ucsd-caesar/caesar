@@ -27,6 +27,7 @@ class Livestream(models.Model):
         return self.title
     
 class Viewport(models.Model):
+    name = models.CharField(max_length=255, default="Viewport")
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='viewports')
     livestreams = models.ManyToManyField(Livestream, related_name='viewports')
     date_created = models.DateTimeField(auto_now_add=True)

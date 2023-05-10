@@ -1,17 +1,88 @@
+{% load static %}
 <!DOCTYPE html>
-<html>
-<head>
-  <title>Live Stream</title>
-  <link href="/static/video-js.min.css" rel="stylesheet">
+<html lang="en">
+    <head>
+        <title>{{ user.username }} | New Stream</title>
+        <meta charset="utf-8">
+        {% csrf_token %}
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" href="{% static 'dashboard/profile.css' %}">
+        <script src="{% static 'dashboard/jquery.js' %}"></script>
+    </head>
+    <body class="text-center">
+        <header class="p-3 text-bg-dark">
+            <div class="d-flex flex-row align-items-right justify-content-center justify-content-lg-start">
+              <a href="/dashboard" role="button" class="btn btn-sm btn-outline-light">Home</a>
+            </div>
+        </header>
+        <main class="container">
+            <section class="py-5 container">
+                <h1 class="h3 mb-3 ">{{ user.username }}</h1>
+                <form method="post" action="">
+                    {% csrf_token %}
+                    <div class="container d-flex">
+                    {{ form.as_p }}
+                    <button class="btn btn-lg btn-primary" type="submit">Stream</button>
+                    </div>
+                </form>
+                <div class="container d-flex">
+                    <select id="livestream-select" class="form-select">
+                        <option selected disabled>Open this select menu</option>
+                        {% for stream in user.created_livestreams.all %}
+                            <option value="{{ stream.id }}" data-livestream-id="{{ stream.id }}">{{ stream.title }}</option>
+                        {% endfor %}
+                    </select>
+                    <button id="stopstream-btn" class="btn btn-lg btn-danger" type="submit">End Stream</button>
+                </div>
+            </section>
+            <div id="quilt" class="container-fluid">      
+                {% for stream in user.created_livestreams.all %}
+                    <div class="display-container">
+                        <div class="display-img">
+                            <a href="{{ stream.source }}" class="thumbnail-btn btn p-0" target="_blank" rel="noopener noreferrer" role="button">
+                                <img class="live-img" src="{{ stream.source }}">
+                            </a>
+                        </div>
+                        <div class="display-info">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <p class="card-text">{{ stream.title }}</p>
+                                <p>{{ stream.agency }}</p>
+                                <div class="btn-group">
+                                    <button class="btn btn-sm btn-outline-dark">View</button>
+                                    <button class="btn btn-sm btn-outline-danger">Remove</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        </main>
+        <script>
+            const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+            const stopBtn = document.getElementById('stopstream-btn');
+            stopBtn.addEventListener('click', async () => {
+                const livestreamSelect = document.getElementById('livestream-select');
+                const selectedOption = livestreamSelect.options[livestreamSelect.selectedIndex];
+                const livestreamId = selectedOption.getAttribute('data-livestream-id');
 
-  <!-- Video.js -->
-  <link href="//vjs.zencdn.net/7.10.2/video-js.min.css" rel="stylesheet">
-  <script src="//vjs.zencdn.net/7.10.2/video.min.js"></script>
-</head>
-<body>
-  <div id='wowza_player'>
-
-  </div>
-  <script id='player_embed' src='//player.video.wowza.com/hosted/zwhcm1qv/wowza.js' type='text/javascript'></script>
-</body>
+                const response = await fetch('{% url "dashboard:stop_stream" %}', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                        'X-CSRFToken': csrftoken,
+                    },
+                    body: new URLSearchParams({livestream_id: livestreamId}),
+                });
+    
+                const result = await response.json();
+                if (result.status === 'success') {
+                    const success = document.createElement('p');
+                    success.innerHTML = 'Stream stopped';
+                    document.body.appendChild(success);
+                } else {
+                    //console.error(result.message);
+                }
+            });
+        </script>
+    </body>
 </html>

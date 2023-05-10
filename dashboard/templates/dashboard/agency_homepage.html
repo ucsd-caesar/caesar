@@ -7,21 +7,17 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <link rel="stylesheet" href="{% static 'dashboard/profile.css' %}">
     </head>
-    <body class="text-center">
+    <body>
         <header class="p-3 text-bg-dark">
             <div class="d-flex flex-row align-items-right justify-content-center justify-content-lg-start">
               <a href="/dashboard" role="button" class="btn btn-sm btn-outline-light">Home</a>
             </div>
         </header>
-        <main class="form-signin w-100 m-auto">
-            <h1 class="h3 mb-3 fw-normal">{{ agency.name }}</h1>
-            <h2 class="h4 mb-3 fw-normal">Members</h2>
-            <a href="/dashboard/agency/{{ agency.id }}/invite" role="button" class="btn btn-sm btn-outline-light">Add Member</a>
-            <ul>
-                {% for member in agency.members.all %}
-                    <li>{{ member }}</li>
-                {% endfor %}
-            </ul>
+        <main class="form-signin w-100">
+            <h1 class="my-3 fw-normal text-center">{{ agency.name }}</h1>
+            <div class="pl-3 text-center">
+                <h4>{{ agency.members.count }} {% if agency.members.count == 1 %}Member{% else %}Members{% endif %}</h2>
+            </div>
         </main>
     </body>
 </html>

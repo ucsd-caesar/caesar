@@ -121,6 +121,10 @@ hr {
     width: 280px;
 }
 
+.agency-name-container{
+    width: 70%;
+}
+
 .list-group-item {
     background-color: transparent;
 }

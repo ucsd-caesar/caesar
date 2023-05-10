@@ -2,5 +2,9 @@
 @import "dashboard.css";
 
 html, body, main {
-  background-color: var(--bs-gray);
+  background-color: var(--bs-dark);
+}
+
+p, h1, h2, h3, h4, h5, h6, td, th {
+  color: var(--bs-light);
 }

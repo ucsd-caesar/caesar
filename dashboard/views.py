@@ -20,7 +20,7 @@ import os
 load_dotenv() # load environment variables from .env file
 
 class DashboardView(generic.ListView):
-    template_name = "dashboard/map.html"
+    template_name = "dashboard/dashboard.html"
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -33,9 +33,15 @@ class DashboardView(generic.ListView):
     
     def get_queryset(self):
         return MapChoice.objects.all()
+
+class StreamView(generic.TemplateView):
+    template_name = "dashboard/stream.html"
     
-def stream(request):
-    return render(request, 'dashboard/stream.html')
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['is_authenticated'] = self.request.user.is_authenticated
+        context['username'] = self.request.user.username if self.request.user.is_authenticated else ''
+        return context
 
 def invite_user(request, agency_id):
     agency = Agency.objects.get(pk=agency_id)

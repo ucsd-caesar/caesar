@@ -14,9 +14,13 @@ document.addEventListener('DOMContentLoaded', () => {
     const resizePanelBtn = document.querySelector('#resize-panel-btn');
     const resizePanelTxt = document.querySelector('#resize-panel-txt');
 
-    const openViewportBtn = document.querySelector('#open-viewport-btn');
+    const saveViewportBtn = document.querySelector('#open-viewport-btn');
+    saveViewportBtn.display = 'none';
 
     const viewportStreams = []; // list of livestreams currently in viewport
+
+    // initialize right panel as hidden
+    rightPanel.style.display = 'none';
 
     /* Clicking the Expand button expands the right-section to fill the viewport */
     resizePanelBtn.addEventListener('click', onExpandBtn);
@@ -42,11 +46,22 @@ document.addEventListener('DOMContentLoaded', () => {
         rightPanel.style.width = 'min(300vw, 1000px)';
     }
 
+    /* Clicking the Save Viewport button opens a new tab with all streams currently in viewport */
+    saveViewportBtn.addEventListener('click', () => {
+        if (viewportStreams.length==0) {
+            return;
+        }
 
-    /* Clicking the Open Viewport button opens a new tab with all streams currently in viewport */
-    openViewportBtn.addEventListener('click', () => {
+        const viewportName = document.querySelector('#viewport-name');
+        // check if viewport name is valid
+        if (!viewportName.value) {
+            viewportName.classList.add("is-invalid");
+            return;
+        }
+
         // create a new json with fields user: user_id, livestreams: viewportStreams
         const data = {
+            name: viewportName.value,
             user: user_id,
             livestreams: viewportStreams
         };
@@ -76,6 +91,12 @@ document.addEventListener('DOMContentLoaded', () => {
             // save stream id to viewportStreams
             const id = image.getAttribute('data-id');
             viewportStreams.push(id);
+
+            // check number of streams in viewport
+            const numStreams = viewportStreams.length;
+            if (numStreams == 1) {
+                rightPanel.style.display = 'block';
+            }
 
             // create new display-img div and display-info div
             const displayImg = document.createElement('div');
@@ -132,6 +153,12 @@ document.addEventListener('DOMContentLoaded', () => {
                 // remove stream id from viewportStreams
                 const index = viewportStreams.indexOf(id);
                 viewportStreams.splice(index, 1);
+
+                // check number of streams in viewport
+                const numStreams = viewportStreams.length;
+                if (numStreams == 0) {
+                    rightPanel.style.display = 'none';
+                }
             });
             
             // add infoContainer to displayInfo

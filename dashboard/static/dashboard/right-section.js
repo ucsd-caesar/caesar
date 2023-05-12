@@ -19,8 +19,8 @@ document.addEventListener('DOMContentLoaded', () => {
     saveViewportBtn.display = 'none';
 
 
-    // initialize right panel as hidden
-    rightPanel.style.display = 'none';
+    // initialize right panel as block
+    rightPanel.style.display = 'block';
 
     /* Clicking the Expand button expands the right-section to fill the viewport */
     resizePanelBtn.addEventListener('click', onExpandBtn);

@@ -27,9 +27,6 @@
   <body>
     <!-- Header -->
   <header class="p-3 text-bg-dark">
-    <div class="d-flex flex-row-reverse align-items-right justify-content-center justify-content-lg-start">
-      <button id="login-btn" role="button" class="btn btn-sm btn-outline-light">Login</button>
-    </div>
   </header>
 
   <!-- Main Content -->
@@ -37,6 +34,7 @@
     <div id="sidebar" class="d-flex flex-column flex-shrink-0 p-1 text-bg-dark">
       <ul class="nav nav-pills flex-column mb-auto">
         <div class="list-group list-group-flush border-bottom scrollarea">
+          <button id="login-btn" role="button" class="btn btn-sm btn-outline-light">Login</button>
           {% for agency in agencies %}
             <a href="/dashboard/agency/{{agency.id}}" class="list-group-item list-group-item-action list-group-item-secondary py-3 lh-sm">
               <div class="d-flex align-items-center justify-content-between">
@@ -54,11 +52,11 @@
     </div>    
     <div id="page-split" class="container-fluid d-flex">
       <div id="left-section" class="container-fluid">
-        <section class="pt-2 pb-5 text-center container">
+        <section class="pb-5 text-center container">
           <form id="search-form" class="col-12 col-lg-auto mb-3 mb-lg-0 me-lg-3" role="search">
-            <div class="btn-group py-2">
+            <div class="btn-group pb-2">
               <input id="search-bar" type="search" class="form-control form-control-light text-bg-light" placeholder="Search..." aria-label="Search">
-              <button type="button" id="search-btn" class="btn btn-secondary py-2">
+              <button type="button" id="search-btn" class="btn btn-sm btn-secondary py-2">
                 <p class="float-start">Search</p>
               </button>
             </div>
@@ -104,14 +102,22 @@
         </div>
       </div>
 
-      <div id="right-section" class="container-fluid row">
-        <div class="list-group">
-          <button type="button" id="resize-panel-btn" class="btn btn-secondary py-2">
+      <div id="right-section" class="container-fluid">
+        <div class="d-flex justify-content-center">
+            <button type="button" id="resize-panel-btn" class="btn btn-sm btn-secondary py-2">
               <p id="resize-panel-txt" class="float-start">Expand Viewport</p>
-          </button>
-          <div class="btn-group py-2">
+            </button>
+            <button type="button" class="btn btn-sm btn-danger py-2">
+              <p id="resize-panel-txt" class="float-start">Clear</p>
+            </button>
+            <button type="button" class="btn btn-sm btn-outline-secondary py-2">
+              <p id="resize-panel-txt" class="float-start">List</p>
+            </button>
+            <button type="button" class="btn btn-sm btn-outline-secondary active py-2">
+              <p id="resize-panel-txt" class="float-start">Grid</p>
+            </button>
             <input type="text" class="form-control-sm" id="viewport-name" placeholder="name" aria-label="Viewport Name" aria-describedby="inputGroupPrepend2" required>
-            <button type="button" id="open-viewport-btn" class="btn btn-secondary py-2">
+            <button type="button" id="open-viewport-btn" class="btn btn-sm btn-secondary py-2">
               <p class="float-start">Save Viewport</p>
             </button>
         </div>

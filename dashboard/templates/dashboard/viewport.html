@@ -21,8 +21,7 @@
             
         </header>
         <main> 
-            <div class="d-flex flex-column w-100 h-100 py-0 px-5 ">
-            <!-- add a container so that each card-group does not overflow-y -->  
+            <div class="d-flex flex-column w-100 h-100 py-0 px-5 "> 
                 {% for stream in viewport.livestreams.all %}
                     {% with counter=forloop.counter|add:"-1" %}
                         {% if counter|divisibleby:"4" %}

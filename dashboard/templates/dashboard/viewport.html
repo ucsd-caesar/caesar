@@ -4,35 +4,50 @@
     <head>
         <title>{{ user.username }} | {{ viewport.name }}</title>
         <meta charset="utf-8">
-        {% csrf_token %}
         <meta name="viewport" content="width=device-width, initial-scale=1">
-        <link rel="stylesheet" href="{% static 'dashboard/profile.css' %}">
+        {% csrf_token %}
+        <link rel="stylesheet" href="{% static 'dashboard/viewport.css' %}">
         <script src="{% static 'dashboard/jquery.js' %}"></script>
     </head>
     <body class="text-center">
-        <header class="p-3 text-bg-dark">
-            <div class="d-flex flex-row align-items-right justify-content-center justify-content-lg-start">
+        <header class="justify-content-center p-0 text-bg-dark">
+            <div class="flex-row">
               <a href="/dashboard" role="button" class="btn btn-sm btn-outline-light">Home</a>
+              <div class="btn-group" role="group" aria-label="Basic example">
+                <button type="button" class="btn btn-sm btn-outline-light" id="list-view-btn">List View</button>
+                <button type="button" class="btn btn-sm btn-outline-light active" id="grid-view-btn">Grid View</button>
             </div>
+            </div>
+            
         </header>
-        <main class="container">
-            <div id="quilt" class="container-fluid">      
+        <main> 
+            <div class="d-flex flex-column w-100 h-100 py-0 px-5 ">
+            <!-- add a container so that each card-group does not overflow-y -->  
                 {% for stream in viewport.livestreams.all %}
-                    <div class="display-container">
-                        <div class="display-img">
-                            <a href="{{ stream.source }}" class="thumbnail-btn btn p-0" target="_blank" rel="noopener noreferrer" role="button">
-                                <img class="live-img" src="{{ stream.source }}">
-                            </a>
+                    {% with counter=forloop.counter|add:"-1" %}
+                        {% if counter|divisibleby:"4" %}
+                            {% if not forloop.first %}
+                                </div> <!-- Close the previous row container -->
+                            {% endif %}
+                            <!-- grid classlist: row px-0 py-0 -->
+                            <div class="rowdiv row px-0 py-0">
+                        {% endif %}
+                        <!-- if counter is divisible by 2, not the first, and not divisible by 4-->
+                        {% if counter|divisibleby:"2" and not forloop.first and not counter|divisibleby:"4" %}
+                            <div class="w-100"></div>
+                        {% endif %}
+                        <div class="col p-0">
+                                <a href="{{ stream.source }}" class="btn p-0" target="_blank" rel="noopener noreferrer" role="button">
+                                    <img class="img-fluid" src="{{ stream.source }}">
+                                </a>
                         </div>
-                        <div class="display-info">
-                            <div class="d-flex justify-content-between align-items-center">
-                                <p class="card-text">{{ stream.title }}</p>
-                                <p>{{ stream.agency }}</p>
-                            </div>
-                        </div>
-                    </div>
+                    {% endwith %}
                 {% endfor %}
+                {% if not viewport.livestreams.all.count|divisibleby:"4" %}
+                    </div> <!-- Close the last container if not already closed -->
+                {% endif %}
             </div>
         </main>
     </body>
+    <script src="{% static 'dashboard/viewport.js' %}"></script>
 </html>

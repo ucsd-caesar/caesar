@@ -1,0 +1,41 @@
+@import "bootstrap/bootstrap.min.css";
+
+:root {
+  --bs-light: #f8f9fa;
+  --bs-black: #000;
+  --bs-white: #fff;
+  --bs-gray: #6c757d;
+  --bs-gray-dark: #343a40;
+  --bs-gray-100: #f8f9fa;
+  --bs-gray-200: #e9ecef;
+  --bs-gray-300: #dee2e6;
+  --bs-gray-400: #ced4da;
+  --bs-gray-500: #adb5bd;
+  --bs-gray-600: #6c757d;
+  --bs-gray-700: #495057;
+  --bs-gray-800: #343a40;
+  --bs-gray-900: #212529;
+  --bs-dark: #212529;
+}
+
+html, body, main {
+  background-color: var(--bs-dark);
+  height: 100%;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+p, h1, h2, h3, h4, h5, h6, td, th {
+  color: var(--bs-light);
+}
+
+header {
+  position: absolute;
+  z-index: 1;
+}
+
+.img-fluid {
+  max-width: 100%;
+  height: auto;
+}

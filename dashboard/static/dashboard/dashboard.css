@@ -118,7 +118,11 @@ hr {
 
 #sidebar {
     height: 100%;
-    width: 280px;
+    width: 30px;
+    color: red;
+}
+#sidebar-content {
+    display: block;
 }
 
 .agency-name-container{
@@ -138,7 +142,7 @@ hr {
 }
 
 #left-section {
-    width: 100%;
+    width: 30vw;
     margin: 0 auto;
     background-color: var(--bs-dark);
     border-radius: 5px;
@@ -152,9 +156,10 @@ hr {
     flex-wrap: wrap;
     justify-content: center;
 }
+
 .card {
-    max-width: 350px;
-    max-height: 300px;
+    max-width: 400px;
+    max-height: 350px;
     background: transparent;
     box-shadow: none;
     border: none;
@@ -170,6 +175,27 @@ hr {
 .card-image-top {
     height: 100%;
     width: 100%;
+}
+
+.stream-name {
+    display: block;
+    max-width: 100%;
+    box-sizing: border-box;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    text-align: left!important;
+    position: absolute;
+    margin: -25px 0 0 0;
+    padding-left: 10px;
+    z-index: 999;
+    bottom: 4;
+    left: 0px;
+    font-size: 13px!important;
+    font-weight: 500;
+    background-color: rgba(0, 0, 0, 0.6 )!important;
+    padding: 2px 10px 2px 10px;
+    border-radius: 45px;
 }
 
 .addview-btn {
@@ -189,7 +215,7 @@ hr {
 }
 
 #right-section {
-    width: min(300vw, 1000px);
+    width: 70vw;
     max-height: 100vh;
     display: flex;
     background-color: var(--bs-dark);
@@ -209,25 +235,23 @@ hr {
     padding: 0;
 }
 
-.display-container {
-    max-width: max-content;
-    max-height: max-content;
-    display: grid;
-    position: relative;
-    padding: 0;
-    overflow: clip;
-}
-
-.display-img {
+.right-card {
     width: 100%;
     height: 100%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+    background: transparent;
+    box-shadow: none;
+    border: none;
+    padding: 0;
 }
 
-.live-img {
-    width: 100%;
+.right-card-body {
+    background: transparent;
+    box-shadow: none;
+    border: none;
+}
+
+.img-fluid {
+    max-width: 100%;
     height: auto;
     background-color: transparent;
 }

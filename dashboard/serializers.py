@@ -38,13 +38,14 @@ class CustomUserSerializer(serializers.ModelSerializer):
         extra_kwargs = {'password': {'write_only': True}}
 
     def create(self, validated_data):
-        user = CustomUser(
-            email=validated_data['email'],
-            username=validated_data['username'],
-            is_admin=validated_data.get('is_admin', False)
-        )
-        user.set_password(validated_data['password'])
+        viewports = validated_data.pop('viewports', [])
+        password = validated_data.pop('password', None)
+        user = CustomUser(**validated_data)
+        if password is not None:
+            user.set_password(password)
         user.save()
+        for viewport in viewports:
+            user.viewports.add(viewport)
         return user
 
 class ViewportSerializer(serializers.ModelSerializer):

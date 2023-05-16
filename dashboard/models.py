@@ -90,7 +90,6 @@ class CustomUser(AbstractBaseUser):
     last_login = models.DateTimeField(auto_now=True)
     date_joined = models.DateTimeField(auto_now_add=True)
     groups = models.ManyToManyField(Agency, related_name='agency_members')
-    password = models.CharField(max_length=255)
 
     objects = CustomUserManager()
 

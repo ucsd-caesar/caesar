@@ -20,6 +20,17 @@ class UserViewSet(viewsets.ModelViewSet):
     queryset = CustomUser.objects.all()
     serializer_class = CustomUserSerializer
 
+    def create(self, request, *args, **kwargs):
+        data = request.data
+        if isinstance(data, list): # <- allow for multiple items
+            serializer = self.get_serializer(data=data, many=True)
+        else:
+            serializer = self.get_serializer(data=data)
+
+        serializer.is_valid(raise_exception=True)
+        self.perform_create(serializer)
+        return Response(serializer.data)
+
 class LivestreamViewSet(viewsets.ModelViewSet):
     queryset = Livestream.objects.all()
     serializer_class = LivestreamSerializer

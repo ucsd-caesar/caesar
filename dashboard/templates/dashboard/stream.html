@@ -16,46 +16,7 @@
             </div>
         </header>
         <main class="container">
-            <section class="py-5 container">
-                <h1 class="h3 mb-3 ">{{ user.username }}</h1>
-                <form method="post" action="">
-                    {% csrf_token %}
-                    <div class="container d-flex">
-                    {{ form.as_p }}
-                    <button class="btn btn-lg btn-primary" type="submit">Stream</button>
-                    </div>
-                </form>
-                <div class="container d-flex">
-                    <select id="livestream-select" class="form-select">
-                        <option selected disabled>Open this select menu</option>
-                        {% for stream in user.created_livestreams.all %}
-                            <option value="{{ stream.id }}" data-livestream-id="{{ stream.id }}">{{ stream.title }}</option>
-                        {% endfor %}
-                    </select>
-                    <button id="stopstream-btn" class="btn btn-lg btn-danger" type="submit">End Stream</button>
-                </div>
-            </section>
-            <div id="quilt" class="container-fluid">      
-                {% for stream in user.created_livestreams.all %}
-                    <div class="display-container">
-                        <div class="display-img">
-                            <a href="{{ stream.source }}" class="thumbnail-btn btn p-0" target="_blank" rel="noopener noreferrer" role="button">
-                                <img class="live-img" src="{{ stream.source }}">
-                            </a>
-                        </div>
-                        <div class="display-info">
-                            <div class="d-flex justify-content-between align-items-center">
-                                <p class="card-text">{{ stream.title }}</p>
-                                <p>{{ stream.agency }}</p>
-                                <div class="btn-group">
-                                    <button class="btn btn-sm btn-outline-dark">View</button>
-                                    <button class="btn btn-sm btn-outline-danger">Remove</button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                {% endfor %}
-            </div>
+
         </main>
     </body>
 </html>

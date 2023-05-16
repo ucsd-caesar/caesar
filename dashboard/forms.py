@@ -15,6 +15,6 @@ class SRTLinkForm(forms.Form):
     srt_link = forms.URLField(
         label='SRT Link',
         required=True,
-        widget=forms.TextInput(attrs={'placeholder': 'Enter SRT video streaming server link'})
+        widget=forms.TextInput(attrs={'placeholder': 'URL'})
     )
     agency = forms.ModelChoiceField(Agency.objects.all(), required=True)

@@ -22,6 +22,13 @@ class LivestreamSerializer(serializers.ModelSerializer):
 
     def get_created_by(self, obj):
         return obj.created_by.username
+    
+    created_by = serializers.CurrentUserDefault()
+    
+    def post(self, instance, validated_data):
+        instance.created_by_id = validated_data.get('created_by_id', None)
+        instance.save()
+        return instance
 
 class CustomUserSerializer(serializers.ModelSerializer):
     created_livestreams = LivestreamSerializer(many=True, read_only=True)

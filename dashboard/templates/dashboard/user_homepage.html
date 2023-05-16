@@ -19,6 +19,15 @@
             <section class="py-5 container">
                 <h1 class="h3 mb-3 ">{{ user.username }}</h1>
             </section>
+            {% if user.is_admin %}
+                <form method="post" action="">
+                    {% csrf_token %}
+                    <div class="d-flex flex-column">
+                    {{ form.as_p }}
+                    <button class="btn btn-sm btn-primary" type="submit">Stream</button>
+                    </div>
+                </form>
+            {% endif %}
             <div class="container-fluid">
                 {% if user.created_livestreams.count > 0 %}
                 <h1 class="h3 mb-3 ">Streams</h1>

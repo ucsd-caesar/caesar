@@ -15,7 +15,7 @@ urlpatterns = [
     path("stream/", views.StreamView.as_view(), name="stream"),
 
     path("agency/<int:pk>/", views.AgencyView.as_view(), name="agency_homepage"),
-    path("agency/<int:agency_id>/invite", views.invite_user, name="invite_user"),
+    path("agency/<int:agency_id>/invite", views.AgencyView.invite_user, name="invite_user"),
 
     path("viewport/<int:user_id>/<int:viewport_id>/", views.ViewportView.as_view(), name="viewport"),
     path("viewport/post_viewport/", views.ViewportView.post, name="post_viewport"),

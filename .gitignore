@@ -1,3 +1,4 @@
 .streamlit
 .env
 .env.dev
+data

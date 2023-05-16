@@ -60,6 +60,10 @@ class StreamView(generic.TemplateView):
         context['username'] = self.request.user.username if self.request.user.is_authenticated else ''
         return context
 
+class AgencyView(generic.DetailView):
+    model = Agency
+    template_name = "dashboard/agency_homepage.html"
+
 def invite_user(request, agency_id):
     agency = Agency.objects.get(pk=agency_id)
 
@@ -77,23 +81,6 @@ def invite_user(request, agency_id):
 
     return render(request, 'dashboard/invite_user.html', {'form': form, 'agency': agency})
 
-def post_viewport(request):
-    if request.method == 'POST':
-        try:
-            data = JSONParser().parse(request)
-            serializer = ViewportSerializer(data=data)
-            if serializer.is_valid():
-                serializer.save()
-                return JsonResponse(serializer.data, status=status.HTTP_201_CREATED)
-            return JsonResponse(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-        except JSONDecodeError:
-            return JsonResponse({"status": "error", "message": "No data provided"}, status=400)
-    return JsonResponse({"status": "error", "message": "Invalid request method"}, status=405)
-
-class AgencyView(generic.DetailView):
-    model = Agency
-    template_name = "dashboard/agency_homepage.html"
-
 class ViewportView(generic.DetailView):
     model = Viewport
     template_name = "dashboard/viewport.html"
@@ -110,6 +97,24 @@ class ViewportView(generic.DetailView):
         context['user_id'] = self.kwargs['user_id']
         context['viewport_id'] = self.kwargs['viewport_id']
         return context
+    
+    def post(request):
+        if request.method == 'POST':
+            try:
+                data = JSONParser().parse(request)
+                serializer = ViewportSerializer(data=data)
+                if serializer.is_valid():
+                    serializer.save()
+                    return JsonResponse(serializer.data, status=status.HTTP_201_CREATED)
+                return JsonResponse(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+            except JSONDecodeError:
+                return JsonResponse({"status": "error", "message": "No data provided"}, status=400)
+        return JsonResponse({"status": "error", "message": "Invalid request method"}, status=405)
+    
+    def delete(request, viewport_id):
+        viewport = Viewport.objects.get(pk=viewport_id)
+        viewport.delete()
+        return JsonResponse({"status": "success", "message": "Viewport deleted"}, status=200)
 
 class UserView(LoginRequiredMixin, FormView):
     model = CustomUser
@@ -138,18 +143,8 @@ class UserView(LoginRequiredMixin, FormView):
         self.request.user.save()
 
         return super().form_valid(form)
-
-class LoginView(auth_views.LoginView):
-    model = CustomUser
-    template_name = "dashboard/login.html"
-
-    def get_success_url(self):
-        # redirect to /dashboard/
-        return reverse('dashboard:dashboard')
     
-class StopStreamView(LoginRequiredMixin, generic.DetailView):
-    def post(self, request, *args, **kwargs):
-        livestream_id = request.POST.get('livestream_id')
+    def stop_stream(request, livestream_id):
         try:
             livestream = Livestream.objects.get(pk=livestream_id)
             if livestream in request.user.created_livestreams.all():
@@ -159,6 +154,14 @@ class StopStreamView(LoginRequiredMixin, generic.DetailView):
                 return JsonResponse({"status": "error", "message": "Livestream not found in user's livestreams"}, status=404)
         except Livestream.DoesNotExist:
             return JsonResponse({"status": "error", "message": "Livestream not found"}, status=404)
+
+class LoginView(auth_views.LoginView):
+    model = CustomUser
+    template_name = "dashboard/login.html"
+
+    def get_success_url(self):
+        # redirect to /dashboard/
+        return reverse('dashboard:dashboard')
 
 class UserAPIView(LoginRequiredMixin, views.APIView):
     serializer_class = CustomUserSerializer

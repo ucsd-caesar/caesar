@@ -12,7 +12,7 @@ stopBtns.forEach(btn => {
         const tableRow = btn.parentElement.parentElement;
         const livestreamId = btn.getAttribute('data-stream-id');
 
-        const response = await fetch('{% url "dashboard:stop_stream" %}', {
+        const response = await fetch(`/dashboard/user/${livestreamId}/delete/`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/x-www-form-urlencoded',
@@ -23,7 +23,7 @@ stopBtns.forEach(btn => {
 
         const result = await response.json();
         if (result.status === 'success') {
-            tableRow.remove();
+            location.reload();
         } else {
             console.error(result.message);
         }
@@ -37,5 +37,28 @@ viewportBtns.forEach(btn => {
         const viewport_id = btn.getAttribute('data-viewport-id');
         const url = `/dashboard/viewport/${user_id}/${viewport_id}`;
         window.open(url);
+    });
+});
+
+// add event listener for each delete button
+const deleteBtns = document.querySelectorAll('.delete-viewport-btn');
+deleteBtns.forEach(btn => {
+    btn.addEventListener('click', async () => {
+        const viewport_id = btn.getAttribute('data-viewport-id');
+        const response = await fetch(`/dashboard/viewport/${viewport_id}/delete/`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+                'X-CSRFToken': csrftoken,
+            },
+            body: new URLSearchParams({viewport_id: viewport_id}),
+        });
+
+        const result = await response.json();
+        if (result.status === 'success') {
+            location.reload();
+        } else {
+            console.error(result.message);
+        }
     });
 });

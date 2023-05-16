@@ -21,7 +21,7 @@
             </section>
             <div class="container-fluid">
                 {% if user.created_livestreams.count > 0 %}
-                <h1 class="h3 mb-3 ">My Streams</h1>
+                <h1 class="h3 mb-3 ">Streams</h1>
                 <table class="table justify-content-between">
                     <thead>
                         <tr>
@@ -42,11 +42,9 @@
                         {% endfor %}
                     </tbody>
                 </table>
-                {% else %}
-                <p class="text-muted">You have not created any livestreams yet.</p>
                 {% endif %}
                 {% if user.viewports.count > 0 %}
-                <h1 class="h3 my-3">My Saved Viewports</h1>
+                <h1 class="h3 my-3">Viewports</h1>
                 <table class="table my-4 justify-content-between">
                     <thead>
                         <tr>
@@ -63,6 +61,7 @@
                                 <th>{{ viewport.date_created }}</th>
                                 <td>{{ viewport.livestreams.count }}</td>
                                 <td>
+                                    <button class="delete-viewport-btn btn btn-sm btn-outline-danger" data-viewport-id="{{ viewport.id }}">Delete</button>
                                     <button class="open-viewport-btn btn btn-sm btn-outline-secondary" data-viewport-id="{{ viewport.id }}">Open in New Tab</button>
                                 </td>
                             </tr>

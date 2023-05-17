@@ -64,7 +64,7 @@ class UserAdmin(BaseUserAdmin):
     list_filter = ('is_admin',)
     fieldsets = (
         (None, {'fields': ('username', 'email', 'password',)}),
-        ('Permissions', {'fields': ('is_admin',)}),
+        ('Permissions', {'fields': ('is_admin', 'groups')}),
     )
     readonly_fields = ('created_livestreams', 'viewports')
     # add_fieldsets is not a standard ModelAdmin attribute
@@ -77,8 +77,7 @@ class UserAdmin(BaseUserAdmin):
     )
     search_fields = ('email',)
     ordering = ('email',)
-    filter_horizontal = ()
+    filter_horizontal = ('groups',)
 
 # Now register the new UserAdmin
 admin.site.register(CustomUser, UserAdmin)
-admin.site.unregister(Group)

@@ -1,5 +1,5 @@
 from django.contrib.gis.db import models
-from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
+from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, Group
 from django.conf import settings
 import uuid
 
@@ -89,7 +89,7 @@ class CustomUser(AbstractBaseUser):
     user_permissions = models.ManyToManyField(Agency, related_name='user_permissions')
     last_login = models.DateTimeField(auto_now=True)
     date_joined = models.DateTimeField(auto_now_add=True)
-    groups = models.ManyToManyField(Agency, related_name='agency_members')
+    groups = models.ManyToManyField(Group, related_name='agency_members')
 
     objects = CustomUserManager()
 

@@ -1,9 +1,11 @@
+from typing import Optional
+from django.http.response import HttpResponseRedirect
 from django.shortcuts import render, redirect
 from django.urls import reverse_lazy, reverse
 from django.contrib.auth import views as auth_views
 from django.contrib import messages
-from django.contrib.auth.mixins import LoginRequiredMixin
-from django.http import JsonResponse
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
+from django.http import JsonResponse, Http404
 from django.views import generic, View
 from django.views.generic.edit import FormView
 from dotenv import load_dotenv
@@ -51,7 +53,7 @@ class DashboardView(generic.ListView):
     def get_queryset(self):
         return Livestream.objects.all()
 
-class StreamView(generic.TemplateView):
+class StreamView(LoginRequiredMixin, UserPassesTestMixin, generic.TemplateView):
     template_name = "dashboard/stream.html"
     
     def get_context_data(self, **kwargs):
@@ -59,6 +61,12 @@ class StreamView(generic.TemplateView):
         context['is_authenticated'] = self.request.user.is_authenticated
         context['username'] = self.request.user.username if self.request.user.is_authenticated else ''
         return context
+    
+    def test_func(self):
+        return self.request.user.groups.filter(name='theia').exists()
+    
+    def handle_no_permission(self):
+        raise Http404("You are not authorized to view this page")
 
 class AgencyView(generic.DetailView):
     model = Agency

@@ -63,7 +63,7 @@ class StreamView(LoginRequiredMixin, UserPassesTestMixin, generic.TemplateView):
         return context
     
     def test_func(self):
-        return self.request.user.groups.filter(name='theia').exists()
+        return self.request.user.groups.filter(name='Theia').exists()
     
     def handle_no_permission(self):
         raise Http404("You are not authorized to view this page")

@@ -16,11 +16,14 @@
             </div>
         </header>
         <main class="container">
-            <iframe src="https://test.romneyplanet.com:8888/output01/" height="720" width="1280" frameborder="0" scrolling="no" allowfullscreen="true"></iframe>
-            <iframe src="https://test.romneyplanet.com:8888/output02/" height="720" width="1280" frameborder="0" scrolling="no" allowfullscreen="true"></iframe>
-            <iframe src="https://test.romneyplanet.com:8888/output03/" height="720" width="1280" frameborder="0" scrolling="no" allowfullscreen="true"></iframe>
-            <iframe src="https://test.romneyplanet.com:8888/output04/" height="720" width="1280" frameborder="0" scrolling="no" allowfullscreen="true"></iframe>
-            <iframe src="https://test.romneyplanet.com:8888/output05/" height="720" width="1280" frameborder="0" scrolling="no" allowfullscreen="true"></iframe>
+            {% for stream in livestreams %}
+                {% if "rtsp" in stream.source %}
+                    <p>{{ stream.get_title }}</p>
+                    <video controls>
+                        <source src="{{ source.get_title }}.m3u8" type="application/x-mpegurl">
+                    </video>
+                {% endif %}
+            {% endfor %}
         </main>
     </body>
 </html>

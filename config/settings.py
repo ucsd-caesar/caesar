@@ -33,6 +33,7 @@ ALLOWED_HOSTS = os.environ.get("DJANGO_ALLOWED_HOSTS").split(" ")
 DEBUG = True
 SESSION_COOKIE_SECURE = True
 CSRF_COOKIE_SECURE = True
+CSRF_TRUSTED_ORIGINS = ['http://127.0.0.1']
 # assign gdal and osgeo library path
 # GDAL_LIBRARY_PATH = "/home/ec2-user/gdal-3.6.4/build/libgdal.so.32"
 # GEOS_LIBRARY_PATH = "/home/ec2-user/geos-3.11.2/_build/lib/libgeos_c.so.1"

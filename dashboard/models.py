@@ -26,6 +26,11 @@ class Livestream(models.Model):
     def __str__(self):
         return self.title
     
+    def get_title(self):
+        # returns the last part of the url only if the source starts with 'rtsp'
+        if self.source.startswith('rtsp'):
+            return self.source.split('/')[-1]
+    
 class Viewport(models.Model):
     name = models.CharField(max_length=255, default="Viewport")
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='viewports')

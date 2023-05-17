@@ -1,4 +1,5 @@
 from typing import Optional
+from django.http import HttpResponse
 from django.http.response import HttpResponseRedirect
 from django.shortcuts import render, redirect
 from django.urls import reverse_lazy, reverse
@@ -8,6 +9,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.http import JsonResponse, Http404
 from django.views import generic, View
 from django.views.generic.edit import FormView
+from django.views.decorators.http import require_GET
 from dotenv import load_dotenv
 from json import JSONDecodeError
 from django.http import JsonResponse
@@ -20,6 +22,7 @@ from .models import Agency, Livestream, CustomUser
 from .serializers import *
 from .forms import *
 
+import ffmpeg
 import os
 
 load_dotenv() # load environment variables from .env file
@@ -53,6 +56,19 @@ class DashboardView(generic.ListView):
     def get_queryset(self):
         return Livestream.objects.all()
 
+@require_GET
+def convert_rtsp_to_hls(request):
+  # Get the RTSP stream URL from the request.
+  rtsp_url = request.GET.get('rtsp_url')
+  # get the end of the url
+  rtsp_name = rtsp_url.split('/')[-1]
+
+  # Convert the RTSP stream to HLS.
+  hls_stream = ffmpeg.input(rtsp_url).output('hls', filename='/tmp/'+rtsp_name+'.m3u8')
+
+  # Return the HLS stream to the client.
+  return HttpResponse(hls_stream.output('raw'), content_type='application/x-mpegurl')
+
 class StreamView(LoginRequiredMixin, UserPassesTestMixin, generic.TemplateView):
     template_name = "dashboard/stream.html"
     
@@ -60,6 +76,7 @@ class StreamView(LoginRequiredMixin, UserPassesTestMixin, generic.TemplateView):
         context = super().get_context_data(**kwargs)
         context['is_authenticated'] = self.request.user.is_authenticated
         context['username'] = self.request.user.username if self.request.user.is_authenticated else ''
+        context['livestreams'] = Livestream.objects.all()
         return context
     
     def test_func(self):

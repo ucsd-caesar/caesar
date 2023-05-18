@@ -58,16 +58,22 @@ class DashboardView(generic.ListView):
 
 @require_GET
 def convert_rtsp_to_hls(request):
-  # Get the RTSP stream URL from the request.
-  rtsp_url = request.GET.get('rtsp_url')
-  # get the end of the url
-  rtsp_name = rtsp_url.split('/')[-1]
+    # Get the RTSP stream URL from the request.
+    rtsp_url = request.GET.get('rtsp_url')
+    # get the end of the url
+    rtsp_name = rtsp_url.split('/')[-1]
 
-  # Convert the RTSP stream to HLS.
-  hls_stream = ffmpeg.input(rtsp_url).output('hls', filename='/tmp/'+rtsp_name+'.m3u8')
+    # Define the output path for the HLS stream
+    output_path = f'/tmp/{rtsp_name}.m3u8'
 
-  # Return the HLS stream to the client.
-  return HttpResponse(hls_stream.output('raw'), content_type='application/x-mpegurl')
+    try:
+        # Convert the RTSP stream to HLS.
+        ffmpeg.input(rtsp_url).output(output_path, format='hls').run(overwrite_output=True)
+    except ffmpeg.Error as e:
+        return JsonResponse({'error': str(e)}, status=500)
+
+    # Return the HLS stream URL to the client.
+    return JsonResponse({'hls_url': f'/static/{rtsp_name}.m3u8'})
 
 class StreamView(LoginRequiredMixin, UserPassesTestMixin, generic.TemplateView):
     template_name = "dashboard/stream.html"

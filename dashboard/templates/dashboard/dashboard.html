@@ -57,7 +57,6 @@
           <div class="container">
             <div id="livestream-container" class="row row-cols-1 row-cols-sm-1 row-cols-md-1 row-cols-lg-2 row-cols-xl-2 row-cols-xxl-3 g-3">
               {% for stream in livestreams %}
-                {% if stream.source|lower|startswith:"http" %}
                   <div id="col-{{ stream.id }}" class="col p-0">
                     <div class="card">
                       {% with stream.source|replace_string:'latest-frame,latest-thumb' as thumbnail_url %}
@@ -75,7 +74,6 @@
                       </div>
                     </div>
                   </div>
-                {% endif %}
               {% endfor %}
             </div>
           </div>

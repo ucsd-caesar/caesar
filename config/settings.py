@@ -38,6 +38,9 @@ CSRF_TRUSTED_ORIGINS = ['http://127.0.0.1']
 # GDAL_LIBRARY_PATH = "/home/ec2-user/gdal-3.6.4/build/libgdal.so.32"
 # GEOS_LIBRARY_PATH = "/home/ec2-user/geos-3.11.2/_build/lib/libgeos_c.so.1"
 
+# Celery settings
+CELERY_BROKER_URL = os.environ.get("CELERY_BROKER_URL")
+CELERY_RESULT_BACKEND = os.environ.get("CELERY_RESULT_BACKEND")
 
 # Application definition
 
@@ -52,6 +55,7 @@ INSTALLED_APPS = [
     "django.contrib.gis",
     "rest_framework",
     "rest_framework_gis",
+    "django_celery_results",
 ]
 
 MIDDLEWARE = [

@@ -16,6 +16,9 @@ RUN apt-get update \
 RUN apt-get update &&\
     apt-get install -y binutils libproj-dev gdal-bin
 
+# Install software
+RUN apt-get install -y ffmpeg
+
 # Install pip requirements
 COPY requirements.txt /app/
 RUN pip install -r requirements.txt

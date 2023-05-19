@@ -1,7 +1,9 @@
 from django.contrib.gis.db import models
+from django.dispatch import receiver
+from django.db.models.signals import post_save
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, Group
 from django.conf import settings
-import uuid
+from config.tasks import convert_to_hls
 
 class MapChoice(models.Model):
     name = models.CharField(max_length=255)
@@ -22,6 +24,7 @@ class Livestream(models.Model):
     source = models.CharField(max_length=255, default='')
     agency = models.ForeignKey('Agency', on_delete=models.CASCADE, related_name='livestreams', default=None, null=True)
     created_by = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='created_livestreams')
+    hls = models.URLField(blank=True, null=True)
     
     def __str__(self):
         return self.title
@@ -30,6 +33,14 @@ class Livestream(models.Model):
         # returns the last part of the url only if the source starts with 'rtsp'
         if self.source.startswith('rtsp'):
             return self.source.split('/')[-1]
+        
+@receiver(post_save, sender=Livestream)
+def convert_source(sender, instance=None, created=False, **kwargs):
+    if created and instance.source.startswith('rtsp://'):
+        out_path = f'/dashboard/hls/{instance.id}.m3u8'
+        convert_to_hls.delay(instance.source, out_path)
+        instance.hls = out_path
+        instance.save()
     
 class Viewport(models.Model):
     name = models.CharField(max_length=255, default="Viewport")

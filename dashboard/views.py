@@ -82,7 +82,9 @@ class StreamView(LoginRequiredMixin, UserPassesTestMixin, generic.TemplateView):
         context = super().get_context_data(**kwargs)
         context['is_authenticated'] = self.request.user.is_authenticated
         context['username'] = self.request.user.username if self.request.user.is_authenticated else ''
-        context['livestreams'] = Livestream.objects.all()
+        livestreams = Livestream.objects.all()
+        context['livestreams'] = livestreams
+        context['hls_links'] = {livestream.id: livestream.hls for livestream in livestreams if livestream.hls}
         return context
     
     def test_func(self):

@@ -3,7 +3,7 @@ version: '4.18'
 services:
   web:
     build: .
-    command: python manage.py runserver 0.0.0.0:8000
+    command: bash -c "pip install -r requirements.txt && python manage.py migrate && python manage.py runserver 0.0.0.0:8000"
     volumes:
       - .:/app
     env_file:
@@ -24,5 +24,16 @@ services:
       - 5432:5432
     restart: on-failure
 
+  redis:
+    image: redis:alpine
+    volumes:
+      - redis_data:/data
+    env_file:
+      - .env
+    ports:
+      - 6379:6379
+    restart: on-failure
+
 volumes:
   postgres_data:
+  redis_data:

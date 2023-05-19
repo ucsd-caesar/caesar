@@ -8,6 +8,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <link rel="stylesheet" href="{% static 'dashboard/profile.css' %}">
         <script src="{% static 'dashboard/jquery.js' %}"></script>
+        <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
     </head>
     <body class="text-center">
         <header class="p-3 text-bg-dark">
@@ -19,11 +20,13 @@
             {% for stream in livestreams %}
                 {% if "rtsp" in stream.source %}
                     <p>{{ stream.get_title }}</p>
-                    <video controls>
-                        <source src="{{ source.get_title }}.m3u8" type="application/x-mpegurl">
-                    </video>
+                    <video id="video-{{ stream.id }}" class="hls" controls></video>
                 {% endif %}
             {% endfor %}
         </main>
     </body>
+    <script>
+        var hlsLinks = {{ hls_links|safe }};
+    </script>
+    <script src="{% static 'dashboard/stream.js' %}"></script>
 </html>

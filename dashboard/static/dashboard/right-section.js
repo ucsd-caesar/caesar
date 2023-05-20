@@ -181,6 +181,7 @@ document.addEventListener('DOMContentLoaded', () => {
             liveImg.classList.add('card-img-top');
             liveImg.src = image.getAttribute('data-source');
             liveImg.setAttribute('data-id', id);
+            observer.observe(liveImg); // add observer to liveimg for periodic updates
             // add link to view stream in new window
             const alink = document.createElement('a');;
             alink.href = image.getAttribute('data-source');

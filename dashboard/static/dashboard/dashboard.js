@@ -1,13 +1,4 @@
 $(document).ready(function() {
-    function updateImages() {
-        // For each img tag with a 'card-img-top' class
-        $('img.card-img-top').each(function() {
-            var img = $(this);
-            var livestream_id = img.attr('data-id');
-            fetchImage(livestream_id, img); // Pass img to fetchImage
-        });
-    }
-
     // Fetch image from api and update the image source
     function fetchImage(livestream_id, img) {
         // Fetch the latest image for this livestream
@@ -20,9 +11,27 @@ $(document).ready(function() {
         });
     }
 
-    // Update the images immediately
-    updateImages();
+    // Create an observer instance
+    var observer = new IntersectionObserver(function(entries) { 
+        entries.forEach(function(entry) {
+            var img = $(entry.target);
+            var livestream_id = img.attr('data-id');
 
-    // Then update every 60 seconds
-    setInterval(updateImages, 60000);
+            // If the image is in view
+            if (entry.isIntersecting) {
+                // Fetch image immediately
+                fetchImage(livestream_id, img);
+
+                // Then fetch image every 60 seconds
+                img.data('intervalId', setInterval(fetchImage, 60000, livestream_id, img));
+            } else {
+                // If element is out of the viewport, clear the interval
+                clearInterval(img.data('intervalId'));
+            }
+        });
+    });
+
+    $('img.card-img-top').each(function() {
+        observer.observe(this);
+    });
 });

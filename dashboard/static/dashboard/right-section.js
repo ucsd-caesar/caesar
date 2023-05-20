@@ -152,7 +152,7 @@ document.addEventListener('DOMContentLoaded', () => {
             <div class="display-container col p-0">
               <div class="card">
                 <a href="#" class="btn p-0" target="_blank" rel="noopener noreferrer" role="button">
-                  <img class="card-img-top" src="https://cameras.alertcalifornia.org/public-camera-data/Axis-AlisoLaguna1/latest-frame.jpg?rqts=1683834051,Aliso" focusable="true" _mstaria-label="4468347" _mstHash="13" style="direction: ltr; text-align: left;"/>
+                  <img class="card-img-top" data-id="{{ stream.id }}" src="https://cameras.alertcalifornia.org/public-camera-data/Axis-AlisoLaguna1/latest-frame.jpg?rqts=1683834051,Aliso" focusable="true" _mstaria-label="4468347" _mstHash="13" style="direction: ltr; text-align: left;"/>
                 </a>
                 <div class="card-body d-flex flex-column p-0">
                   <div class="display-info">
@@ -180,6 +180,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const liveImg = document.createElement('img');
             liveImg.classList.add('card-img-top');
             liveImg.src = image.getAttribute('data-source');
+            liveImg.setAttribute('data-id', id);
             // add link to view stream in new window
             const alink = document.createElement('a');;
             alink.href = image.getAttribute('data-source');

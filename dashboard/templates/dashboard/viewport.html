@@ -37,7 +37,7 @@
                         {% endif %}
                         <div class="col p-0">
                                 <a href="{{ stream.source }}" class="btn p-0" target="_blank" rel="noopener noreferrer" role="button">
-                                    <img class="img-fluid" src="{{ stream.source }}">
+                                    <img class="img-fluid card-img-top" src="{{ stream.source }}" data-id="{{ stream.id }}">
                                 </a>
                         </div>
                     {% endwith %}
@@ -48,5 +48,6 @@
             </div>
         </main>
     </body>
+    <script src="{% static 'dashboard/observer.js' %}"></script>
     <script src="{% static 'dashboard/viewport.js' %}"></script>
 </html>

@@ -26,14 +26,33 @@
   </head>
   <body>
     <!-- Header -->
-  <header class="p-3 text-bg-dark align-items-start">
-    <button id="login-btn" role="button" class="btn btn-sm btn-outline-light">Login</button>
+  <header class="p-2 text-bg-dark align-items-start">
   </header>
 
   <!-- Main Content -->
   <main class="d-flex flex-nowrap">
-    <div id="page-split" class="container-fluid d-flex">
+
+    <!-- Sidebar -->
+    <div id="sidebar" class="d-flex flex-column flex-shrink-0 p-0 bg-dark">
+      <div id="sidebar-btn-container" class="container py-0 my-0">
+        <ul class="nav nav-pills flex-column mb-auto pb-1">
+          <li class="nav-item">
+            <a id="login-btn" role="button" href="/" class="nav-link text-white" aria-current="page">
+              Login
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="#" class="nav-link text-white">
+              Search
+            </a>
+          </li>
+        </ul>
+      </div>
+    </div>
+    <div id="page-split" class="container-fluid d-flex px-1 py-0">
       <div id="left-section" class="container-fluid">
+
+        <!-- Left Section Buttons/Search -->
         <div class="d-flex justify-content-between pb-5 text-center">
           <div class="btn-group">
             <button type="button" id="list-search-btn" class="btn btn-sm btn-outline-secondary py-0 active">
@@ -53,6 +72,7 @@
           </form>
         </div>  
 
+        <!-- Left Section Results -->
         <div class="album py-3">
           <div class="container">
             <div id="livestream-container" class="row row-cols-1 row-cols-sm-1 row-cols-md-1 row-cols-lg-2 row-cols-xl-2 row-cols-xxl-3 g-3">
@@ -83,6 +103,8 @@
       </div>
 
       <div id="right-section" class="container">
+
+        <!-- Right Section Buttons -->
         <div class="d-flex justify-content-center">
             <button type="button" id="resize-panel-btn" class="btn btn-sm btn-secondary py-2">
               <p id="resize-panel-txt" class="float-start">Expand Viewport</p>
@@ -101,6 +123,8 @@
               <p class="float-start">Save Viewport</p>
             </button>
         </div>
+
+        <!-- Right Section Viewport -->
         <div class="container">
           <div id="quilt" class="row row-cols-1 row-cols-sm-1 row-cols-md-1 row-cols-lg-1 row-cols-xl-1 row-cols-xxl-1 g-0">
           </div>

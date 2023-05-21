@@ -99,7 +99,7 @@ html, body, main {
 header {
     background-color: var(--header-color);
     color: white;
-    padding: 20px;
+    padding: 0px;
 }
 
 p, strong, small{
@@ -118,11 +118,18 @@ hr {
 
 #sidebar {
     height: 100%;
-    width: 30px;
-    color: red;
+    min-width: 250px;
+    background-color: var(--bs-dark);
 }
-#sidebar-content {
-    display: block;
+
+#sidebar-btn-container {
+    background-color: var(--bs-gray-800);
+    border-radius: 5px;
+}
+
+.nav-item {
+    background-color: var(--bs-gray-800);
+
 }
 
 .agency-name-container{
@@ -144,7 +151,7 @@ hr {
 #left-section {
     width: 30vw;
     margin: 0 auto;
-    background-color: var(--bs-dark);
+    background-color: var(--bs-gray-800);
     border-radius: 5px;
     box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }

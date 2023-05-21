@@ -26,10 +26,9 @@ document.addEventListener('DOMContentLoaded', () => {
         resizePanelBtn.addEventListener('click', onCollapseBtn);
         resizePanelBtn.removeEventListener('click', onExpandBtn);
         leftPanel.style.display = 'none';
-        resizePanelTxt.innerHTML = 'Collapse Viewport';
+        resizePanelTxt.innerHTML = 'Shrink Viewport';
         resizePanelTxt.classList.remove('float-start');
         resizePanelTxt.classList.add('float-end');
-        rightPanel.style.width = '100%';
     }
 
     /* Clicking the Collapse button collapses the right-section to its original size */
@@ -40,8 +39,6 @@ document.addEventListener('DOMContentLoaded', () => {
         resizePanelTxt.innerHTML = 'Expand Viewport';
         resizePanelTxt.classList.remove('float-end');
         resizePanelTxt.classList.add('float-start');
-        // resize right-section to original width
-        rightPanel.style.width = 'min(300vw, 1000px)';
     }
 
     /* Clicking the Save Viewport button opens a new tab with all streams currently in viewport */

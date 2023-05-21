@@ -1,5 +1,4 @@
 @import "bootstrap/bootstrap.min.css";
-@import "dashboard.css";
 
 html, body, main {
   background-color: var(--bs-dark);

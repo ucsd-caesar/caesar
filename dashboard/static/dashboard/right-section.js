@@ -76,9 +76,50 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
+    /* Listener for choosing a viewport from the dropdown menu */
+    const choices = document.querySelectorAll('.vp-item');
+    choices.forEach((choice) => {
+        choice.addEventListener('click', () => {
+
+            const viewport_id = choice.getAttribute('id');
+
+            // get viewport livestreams from api
+            fetch(`/api/viewports/${viewport_id}/`)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                return response.json()
+            })
+            .then(data => {
+                clearViewport();
+                const livestreamIds = data['livestreams'];
+
+                // for each livestream, add it to the viewport
+                livestreamIds.forEach((streamId) => {
+                    const image = document.querySelector(`#stream-${streamId}`);
+                    addStreamToViewport(streamId, image);
+                });
+            })
+            .catch(error => console.error('There was a problem fetching the viewport: ', error));
+        });
+    });
+
+
+
+
+
+
+
+
+
+
+
     /* Clicking the Clear button removes all streams from the viewport */
     const clearViewportBtn = document.querySelector('#clear-viewport-btn');
-    clearViewportBtn.addEventListener('click', () => {
+    clearViewportBtn.addEventListener('click', clearViewport);
+
+    function clearViewport() {
         displayContainers = document.querySelectorAll('.display-container');
         displayContainers.forEach((container) => {
             container.remove();
@@ -89,7 +130,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const colparent = document.querySelector(`#col-${streamId}`);
             colparent.style.display = 'block';
         });
-    });
+    }
 
     /* Listeners for switching between list view and grid view in viewport */
     const listviewBtn = document.querySelector('#list-view-btn');
@@ -126,7 +167,6 @@ document.addEventListener('DOMContentLoaded', () => {
         button.addEventListener('click', () => {
             const buttonId = button.getAttribute('data-button-id');
             const image = document.querySelector(`#stream-${buttonId}`);
-            const quilt = document.querySelector('#quilt');
             
             // save stream id to viewportStreams
             const id = image.getAttribute('data-id');
@@ -138,106 +178,112 @@ document.addEventListener('DOMContentLoaded', () => {
                 rightPanel.style.display = 'block';
             }
 
-            // get the col div that the image is contained in, remove it
-            const colparent = document.querySelector(`#col-${buttonId}`);
-            colparent.style.display = 'none';
-
-            /* Construct a new display-container in the following format:
-            <div class="display-container col p-0">
-              <div class="card">
-                <a href="#" class="btn p-0" target="_blank" rel="noopener noreferrer" role="button">
-                  <img class="card-img-top" data-id="{{ stream.id }}" src="https://cameras.alertcalifornia.org/public-camera-data/Axis-AlisoLaguna1/latest-frame.jpg?rqts=1683834051,Aliso" focusable="true" _mstaria-label="4468347" _mstHash="13" style="direction: ltr; text-align: left;"/>
-                </a>
-                <div class="card-body d-flex flex-column p-0">
-                  <div class="display-info">
-                    <div class="d-flex justify-content-between">
-                      <p class="card-text">Laguna 1</p>
-                      <p class="text-muted">CalFire</p>
-                      <p class="text-muted">admin</p>
-                      <div class="btn-group">
-                        <button class="btn btn-sm btn-outline-danger">Remove</button>                   
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-            */
-
-            const colDiv = document.createElement('div');
-            colDiv.classList.add('display-container', 'col', 'p-0');
-
-            const cardDiv = document.createElement('div');
-            cardDiv.classList.add('right-card', 'p-0');
-
-            // create live-img and set src to the source of the stream with id == buttonId
-            const liveImg = document.createElement('img');
-            liveImg.classList.add('card-img-top');
-            liveImg.src = image.getAttribute('data-source');
-            liveImg.setAttribute('data-id', id);
-            observer.observe(liveImg); // add observer to liveimg for periodic updates
-            // add link to view stream in new window
-            const alink = document.createElement('a');;
-            alink.href = image.getAttribute('data-source');
-            alink.target = '_blank';
-            alink.rel = 'noopener noreferrer';
-            alink.role = 'button';
-            // put image inside the link
-            alink.appendChild(liveImg);
-            // add alink to cardDiv
-            cardDiv.appendChild(alink);
-
-            // create cardBodyDiv
-            const cardBodyDiv = document.createElement('div');
-            cardBodyDiv.classList.add('right-card-body', 'd-flex', 'flex-column', 'p-0');
-
-            const displayInfo = document.createElement('div');
-            displayInfo.classList.add('display-info');
-
-            //create flexContainer
-            const flexContainer = document.createElement('div');
-            flexContainer.classList.add('d-flex', 'justify-content-between');
-            
-            // create stream-title, stream-agency, stream-creator
-            const streamTitle = document.createElement('p');
-            streamTitle.classList.add('card-text');
-            const streamAgency = document.createElement('p');
-            streamAgency.classList.add('text-muted');
-            const streamCreator = document.createElement('p');
-            streamCreator.classList.add('text-muted');
-            streamTitle.innerHTML = image.getAttribute('data-title');
-            streamAgency.innerHTML = image.getAttribute('data-agency');
-            streamCreator.innerHTML = image.getAttribute('data-creator');
-            flexContainer.appendChild(streamTitle);
-            flexContainer.appendChild(streamAgency);
-            flexContainer.appendChild(streamCreator);
-
-            // create btn-group
-            const btnGroup = document.createElement('div');
-            btnGroup.classList.add('btn-group');
-            const removeBtn = document.createElement('button');
-            removeBtn.classList.add('btn', 'btn-sm', 'btn-outline-danger');
-            removeBtn.innerHTML = 'Remove';
-            btnGroup.appendChild(removeBtn);
-            flexContainer.appendChild(btnGroup);
-
-            removeBtn.addEventListener('click', () => {
-                // remove display-container from quilt
-                quilt.removeChild(colDiv);
-                // remove stream id from viewportStreams
-                const index = viewportStreams.indexOf(id);
-                viewportStreams.splice(index, 1);
-                // display the thumbnail in the left-section
-                colparent.style.display = 'block';
-            });
-            
-            displayInfo.appendChild(flexContainer);  
-            cardBodyDiv.appendChild(displayInfo);
-            cardDiv.appendChild(cardBodyDiv);
-            colDiv.appendChild(cardDiv);         
-            
-            // add display-container to quilt
-            quilt.insertBefore(colDiv, quilt.firstChild);
+            addStreamToViewport(id, image);
         });
     });
+
+    function addStreamToViewport(id, image) {
+            /* Construct a new display-container in the following format:
+        <div class="display-container col p-0">
+            <div class="card">
+            <a href="#" class="btn p-0" target="_blank" rel="noopener noreferrer" role="button">
+                <img class="card-img-top" data-id="{{ stream.id }}" src="https://cameras.alertcalifornia.org/public-camera-data/Axis-AlisoLaguna1/latest-frame.jpg?rqts=1683834051,Aliso" focusable="true" _mstaria-label="4468347" _mstHash="13" style="direction: ltr; text-align: left;"/>
+            </a>
+            <div class="card-body d-flex flex-column p-0">
+                <div class="display-info">
+                <div class="d-flex justify-content-between">
+                    <p class="card-text">Laguna 1</p>
+                    <p class="text-muted">CalFire</p>
+                    <p class="text-muted">admin</p>
+                    <div class="btn-group">
+                    <button class="btn btn-sm btn-outline-danger">Remove</button>                   
+                    </div>
+                </div>
+                </div>
+            </div>
+            </div>
+        </div>
+        */
+        // remove the thumbnail from search results
+        const colparent = document.querySelector(`#col-${id}`);
+        colparent.style.display = 'none';
+
+        const quilt = document.querySelector('#quilt');
+
+        const colDiv = document.createElement('div');
+        colDiv.classList.add('display-container', 'col', 'p-0');
+
+        const cardDiv = document.createElement('div');
+        cardDiv.classList.add('right-card', 'p-0');
+
+        // create live-img and set src to the source of the stream with id == buttonId
+        const liveImg = document.createElement('img');
+        liveImg.classList.add('card-img-top');
+        liveImg.src = image.getAttribute('data-source');
+        liveImg.setAttribute('data-id', id);
+        observer.observe(liveImg); // add observer to liveimg for periodic updates
+        // add link to view stream in new window
+        const alink = document.createElement('a');;
+        alink.href = image.getAttribute('data-source');
+        alink.target = '_blank';
+        alink.rel = 'noopener noreferrer';
+        alink.role = 'button';
+        // put image inside the link
+        alink.appendChild(liveImg);
+        // add alink to cardDiv
+        cardDiv.appendChild(alink);
+
+        // create cardBodyDiv
+        const cardBodyDiv = document.createElement('div');
+        cardBodyDiv.classList.add('right-card-body', 'd-flex', 'flex-column', 'p-0');
+
+        const displayInfo = document.createElement('div');
+        displayInfo.classList.add('display-info');
+
+        //create flexContainer
+        const flexContainer = document.createElement('div');
+        flexContainer.classList.add('d-flex', 'justify-content-between');
+        
+        // create stream-title, stream-agency, stream-creator
+        const streamTitle = document.createElement('p');
+        streamTitle.classList.add('card-text');
+        const streamAgency = document.createElement('p');
+        streamAgency.classList.add('text-muted');
+        const streamCreator = document.createElement('p');
+        streamCreator.classList.add('text-muted');
+        streamTitle.innerHTML = image.getAttribute('data-title');
+        streamAgency.innerHTML = image.getAttribute('data-agency');
+        streamCreator.innerHTML = image.getAttribute('data-creator');
+        flexContainer.appendChild(streamTitle);
+        flexContainer.appendChild(streamAgency);
+        flexContainer.appendChild(streamCreator);
+
+        // create btn-group
+        const btnGroup = document.createElement('div');
+        btnGroup.classList.add('btn-group');
+        const removeBtn = document.createElement('button');
+        removeBtn.classList.add('btn', 'btn-sm', 'btn-outline-danger');
+        removeBtn.innerHTML = 'Remove';
+        btnGroup.appendChild(removeBtn);
+        flexContainer.appendChild(btnGroup);
+
+        removeBtn.addEventListener('click', () => {
+            // remove display-container from quilt
+            quilt.removeChild(colDiv);
+            // remove stream id from viewportStreams
+            const index = viewportStreams.indexOf(id);
+            viewportStreams.splice(index, 1);
+            // display the thumbnail in the left-section
+            colparent.style.display = 'block';
+        });
+        
+        displayInfo.appendChild(flexContainer);  
+        cardBodyDiv.appendChild(displayInfo);
+        cardDiv.appendChild(cardBodyDiv);
+        colDiv.appendChild(cardDiv);         
+        
+        // add display-container to quilt
+        quilt.insertBefore(colDiv, quilt.firstChild);
+    }
+
 });

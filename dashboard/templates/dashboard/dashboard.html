@@ -35,7 +35,7 @@
 
     <!-- Sidebar -->
     <div id="sidebar" class="d-flex flex-column flex-shrink-0 p-0 bg-dark">
-      <div id="sidebar-btn-container" class="container py-0 my-0">
+      <div id="sidebar-btn-container" class="container mb-1">
         <!-- Profile/Search buttons -->
         <ul class="nav nav-pills flex-column mb-auto pb-1">
           <li class="nav-item">
@@ -48,16 +48,6 @@
               Search
             </a>
           </li>
-        </ul>
-        <!-- Viewports -->
-        <ul class="nav nav-pills flex-column mb-auto pb-1">
-          {% for vp in viewports %}
-          <li class="nav-item">
-            <a id="{{ vp.id }}" role="button" href="/" class="nav-link text-white" aria-current="page">
-              {{ vp.name }}
-            </a>
-          </li>
-          {% endfor %}
         </ul>
       </div>
     </div>
@@ -132,6 +122,19 @@
             </button>
             <input type="text" class="form-control-sm" id="viewport-name" placeholder="name" aria-label="Viewport Name" aria-describedby="inputGroupPrepend2" required>
             <button id="open-viewport-btn" class="btn btn-sm btn-outline-primary">save</button>
+            <div class="dropdown show">
+              <a class="btn btn-sm btn-secondary dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-bs-toggle='dropdown' aria-haspopup="true" aria-expanded="false">
+                Open
+              </a>
+            
+              <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+                {% for vp in viewports %}
+                  <a id="{{ vp.id }}" href="#" class="dropdown-item vp-item" aria-current="page">
+                    {{ vp.name }}
+                  </a>
+                {% endfor %}
+              </div>
+            </div>
         </div>
 
         <!-- Right Section Viewport -->

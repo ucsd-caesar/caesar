@@ -26,7 +26,7 @@ document.addEventListener('DOMContentLoaded', () => {
         resizePanelBtn.addEventListener('click', onCollapseBtn);
         resizePanelBtn.removeEventListener('click', onExpandBtn);
         leftPanel.style.display = 'none';
-        resizePanelTxt.innerHTML = 'Shrink Viewport';
+        resizePanelTxt.innerHTML = 'Shrink';
         resizePanelTxt.classList.remove('float-start');
         resizePanelTxt.classList.add('float-end');
     }
@@ -36,7 +36,7 @@ document.addEventListener('DOMContentLoaded', () => {
         resizePanelBtn.addEventListener('click', onExpandBtn);
         resizePanelBtn.removeEventListener('click', onCollapseBtn);
         leftPanel.style.display = 'block';
-        resizePanelTxt.innerHTML = 'Expand Viewport';
+        resizePanelTxt.innerHTML = 'Expand';
         resizePanelTxt.classList.remove('float-end');
         resizePanelTxt.classList.add('float-start');
     }

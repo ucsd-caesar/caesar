@@ -51,6 +51,7 @@ class DashboardView(generic.ListView):
         context['livestreams'] = Livestream.objects.all()
         context['is_authenticated'] = self.request.user.is_authenticated
         context['username'] = self.request.user.username if self.request.user.is_authenticated else ''
+        context['viewports'] = self.request.user.viewports.all() if self.request.user.is_authenticated else ''
         return context
     
     def get_queryset(self):

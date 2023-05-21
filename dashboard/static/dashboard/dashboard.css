@@ -117,6 +117,10 @@ hr {
     opacity: .25;
 }
 
+.text-blue {
+    color: var(--bs-blue);
+}
+
 #sidebar {
     height: 100%;
     min-width: 200px;
@@ -252,8 +256,6 @@ hr {
 }
 
 .right-card {
-    width: 100%;
-    height: 100%;
     background: transparent;
     box-shadow: none;
     border: none;

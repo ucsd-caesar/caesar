@@ -5,6 +5,9 @@
   <head>
     <title>Dashboard</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script type="text/javascript" src="{% static 'dashboard/jquery.js' %}"></script>
+
+    <script type="text/javascript" src="{% static 'dashboard/bootstrap/bootstrap.bundle.min.js' %}"></script>
     <link rel="stylesheet" href="{% static 'dashboard/dashboard.css' %}"> 
 
     {% csrf_token %}
@@ -21,8 +24,6 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/0.4.2/leaflet.draw.css"/>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/0.4.2/leaflet.draw.js"></script>
 
-    <!-- jquery DEV VERSION-->
-    <script src="{% static 'dashboard/jquery.js' %}"></script>
   </head>
   <body>
     <!-- Header -->
@@ -35,6 +36,7 @@
     <!-- Sidebar -->
     <div id="sidebar" class="d-flex flex-column flex-shrink-0 p-0 bg-dark">
       <div id="sidebar-btn-container" class="container py-0 my-0">
+        <!-- Profile/Search buttons -->
         <ul class="nav nav-pills flex-column mb-auto pb-1">
           <li class="nav-item">
             <a id="login-btn" role="button" href="/" class="nav-link text-white" aria-current="page">
@@ -46,6 +48,16 @@
               Search
             </a>
           </li>
+        </ul>
+        <!-- Viewports -->
+        <ul class="nav nav-pills flex-column mb-auto pb-1">
+          {% for vp in viewports %}
+          <li class="nav-item">
+            <a id="{{ vp.id }}" role="button" href="/" class="nav-link text-white" aria-current="page">
+              {{ vp.name }}
+            </a>
+          </li>
+          {% endfor %}
         </ul>
       </div>
     </div>
@@ -107,7 +119,7 @@
         <!-- Right Section Buttons -->
         <div id="viewport-btns" class="d-flex justify-content-center">
             <button type="button" id="resize-panel-btn" class="btn btn-sm btn-secondary py-2">
-              <p id="resize-panel-txt" class="float-start">Expand Viewport</p>
+              <p id="resize-panel-txt" class="float-start">Expand</p>
             </button>
             <button type="button" id="clear-viewport-btn" class="btn btn-sm btn-danger py-2">
               <p id="resize-panel-txt" class="float-start">Clear</p>
@@ -119,9 +131,7 @@
               <p id="resize-panel-txt" class="float-start">Grid</p>
             </button>
             <input type="text" class="form-control-sm" id="viewport-name" placeholder="name" aria-label="Viewport Name" aria-describedby="inputGroupPrepend2" required>
-            <button type="button" id="open-viewport-btn" class="btn btn-sm btn-secondary py-2">
-              <p class="float-start">Save Viewport</p>
-            </button>
+            <button id="open-viewport-btn" class="btn btn-sm btn-outline-primary">save</button>
         </div>
 
         <!-- Right Section Viewport -->
@@ -129,14 +139,13 @@
           <div id="quilt" class="row row-cols-1 row-cols-sm-1 row-cols-md-1 row-cols-lg-1 row-cols-xl-1 row-cols-xxl-1 g-0">
           </div>
         </div>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4" crossorigin="anonymous"></script>
-    <script src="{% static 'dashboard/observer.js' %}"></script>
-    <script src="{% static 'dashboard/right-section.js' %}"></script>
-    <script>
-      let id = "{{ user.id }}";
-      setUserId(id);
-    </script>
   </main>
+  <script src="{% static 'dashboard/observer.js' %}"></script>
+  <script src="{% static 'dashboard/right-section.js' %}"></script>
+  <script>
+    let id = "{{ user.id }}";
+    setUserId(id);
+  </script>
   <script src="{% static 'dashboard/search.js' %}"></script>
   <script src="{% static 'dashboard/session.js' %}"></script>
   <script>

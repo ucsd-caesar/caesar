@@ -20,9 +20,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const quilt = document.querySelector('#quilt');
 
-    // initialize right panel as block
-    rightPanel.style.display = 'block';
-
     /* Clicking the Expand button expands the right-section to fill the viewport */
     resizePanelBtn.addEventListener('click', onExpandBtn);
     function onExpandBtn() {

@@ -93,6 +93,7 @@ html, body, main {
     background-color: var(--bs-dark);
     margin: 0;
     padding: 0;
+    overflow-y: hidden;
 }
 
 /* Set styles for the header */
@@ -118,7 +119,7 @@ hr {
 
 #sidebar {
     height: 100%;
-    min-width: 250px;
+    min-width: 200px;
     background-color: var(--bs-dark);
 }
 
@@ -149,19 +150,21 @@ hr {
 }
 
 #left-section {
-    width: 30vw;
-    margin: 0 auto;
+    min-width: 40vw;
+    margin: 0;
     background-color: var(--bs-gray-800);
     border-radius: 5px;
     box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }
 
-#results-list {
-    overflow-y: auto;
-    flex-grow: 1;
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
+.album {
+    height: 100%;
+    overflow-y: scroll;
+}
+
+#search-btns {
+    z-index: 1000;
+    background-color: var(--bs-gray-800);
 }
 
 .card {
@@ -222,14 +225,12 @@ hr {
 }
 
 #right-section {
-    width: 70vw;
-    max-height: 100vh;
-    display: flex;
-    background-color: var(--bs-dark);
+    background-color: var(--bs-gray-800);
+    width: auto;
 }
 
-#right-section-btns {
-    width: 100%;
+#viewport-btns {
+    background-color: var(--bs-gray-800);
 }
 
 #resize-panel-txt {

@@ -50,12 +50,12 @@
       </div>
     </div>
     <div id="page-split" class="container-fluid d-flex px-1 py-0">
-      <div id="left-section" class="container-fluid">
+      <div id="left-section" class="container">
 
         <!-- Left Section Buttons/Search -->
-        <div class="d-flex justify-content-between pb-5 text-center">
+        <div id="search-btns" class="d-flex justify-content-center">
           <div class="btn-group">
-            <button type="button" id="list-search-btn" class="btn btn-sm btn-outline-secondary py-0 active">
+            <button type="button" id="list-search-btn" class="btn btn-sm btn-outline-secondary py-2 active">
               List
             </button>
             <button type="button" id="map-search-btn" class="btn btn-sm btn-outline-secondary py-0">
@@ -63,7 +63,7 @@
             </button>
           </div>
           <form id="search-form" role="search">
-            <div class="btn-group pb-2">
+            <div class="btn-group pb-0">
               <input id="search-bar" type="search" class="form-control form-control-light text-bg-light" placeholder="Search..." aria-label="Search">
               <button type="button" id="search-btn" class="btn btn-sm btn-secondary py-2">
                 <p class="float-start">Search</p>
@@ -73,8 +73,8 @@
         </div>  
 
         <!-- Left Section Results -->
-        <div class="album py-3">
-          <div class="container">
+        <div class="album py-3 px-1">
+          <div class="container px-1">
             <div id="livestream-container" class="row row-cols-1 row-cols-sm-1 row-cols-md-1 row-cols-lg-2 row-cols-xl-2 row-cols-xxl-3 g-3">
               {% for stream in livestreams %}
                 {% if "http" in stream.source %}
@@ -102,10 +102,10 @@
         </div>
       </div>
 
-      <div id="right-section" class="container">
+      <div id="right-section" class="container-fluid bg-dark">
 
         <!-- Right Section Buttons -->
-        <div class="d-flex justify-content-center">
+        <div id="viewport-btns" class="d-flex justify-content-center">
             <button type="button" id="resize-panel-btn" class="btn btn-sm btn-secondary py-2">
               <p id="resize-panel-txt" class="float-start">Expand Viewport</p>
             </button>

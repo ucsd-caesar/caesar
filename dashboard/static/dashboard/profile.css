@@ -7,3 +7,7 @@ html, body, main {
 p, h1, h2, h3, h4, h5, h6, td, th {
   color: var(--bs-light);
 }
+
+.list-container {
+  background-color: var(--bs-gray-800);
+}

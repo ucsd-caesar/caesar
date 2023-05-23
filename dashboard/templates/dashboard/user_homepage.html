@@ -19,67 +19,95 @@
             <section class="py-5 container">
                 <h1 class="h3 mb-3 ">{{ user.username }}</h1>
             </section>
-            {% if user.is_admin %}
-                <form method="post" action="">
-                    {% csrf_token %}
-                    <div class="d-flex flex-column">
-                    {{ form.as_p }}
-                    <button class="btn btn-sm btn-primary" type="submit">Stream</button>
-                    </div>
-                </form>
-            {% endif %}
             <div class="container-fluid">
-                {% if user.created_livestreams.count > 0 %}
-                <h1 class="h3 mb-3 ">Streams</h1>
-                <table class="table justify-content-between">
-                    <thead>
-                        <tr>
-                            <th scope="col">Stream Title</th>
-                            <th scope="col">Organization</th>
-                            <th scope="col">Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody class="justify-content-between">
-                        {% for stream in user.created_livestreams.all %}
+
+                <div class="container list-container">
+                    <table class="table my-4 justify-content-between">
+                        <thead>
                             <tr>
-                                <th scope="row">{{ stream.title }}</th>
-                                <td>{{ stream.agency }}</td>
-                                <td>
-                                    <button class="stop-btn btn btn-sm btn-outline-danger" data-stream-id="{{ stream.id }}">Stop</button>
-                                </td>
+                                <th scope="col">Protocol</th>
+                                <th scope="col">Your stream URL</th>
                             </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-                {% endif %}
-                {% if user.viewports.count > 0 %}
-                <h1 class="h3 my-3">Viewports</h1>
-                <table class="table my-4 justify-content-between">
-                    <thead>
-                        <tr>
-                            <th scope="col">Name</th>
-                            <th scope="col">Created At</th>
-                            <th scope="col">Stream Count</th>
-                            <th scope="col">Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody class="justify-content-between">
-                        {% for viewport in user.viewports.all %}
-                            <tr class="">
-                                <th>{{ viewport.name }}</th>
-                                <th>{{ viewport.date_created }}</th>
-                                <td>{{ viewport.livestreams.count }}</td>
-                                <td>
-                                    <button class="delete-viewport-btn btn btn-sm btn-outline-danger" data-viewport-id="{{ viewport.id }}">Delete</button>
-                                    <button class="open-viewport-btn btn btn-sm btn-outline-secondary" data-viewport-id="{{ viewport.id }}">Open in New Tab</button>
-                                </td>
+                        </thead>
+                        <tbody class="justify-content-between">
+
+                                <tr class="">
+                                    <td>
+                                        RTSP
+                                    </td>
+                                    <td>
+                                        rtsp://stream.kleinfourlabs.com:8554/{{ user.id }}/stream{{ user.created_livestreams.count }}
+                                    </td>
+                                </tr>
+                                <tr class="">
+                                    <td>
+                                        RTMP
+                                    </td>
+                                    <td>
+                                        rtmp://stream.kleinfourlabs.com:1935/{{ user.id }}/stream{{ user.created_livestreams.count }}
+                                    </td>
+                                </tr>
+
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="container list-container">
+                    {% if user.viewports.count > 0 %}
+                    <h1 class="h3 my-3">Viewports</h1>
+                    <table class="table my-4 justify-content-between">
+                        <thead>
+                            <tr>
+                                <th scope="col">Name</th>
+                                <th scope="col">Created At</th>
+                                <th scope="col">Stream Count</th>
+                                <th scope="col">Actions</th>
                             </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-                {% else %}
-                <p class="text-muted">You have not created any viewports yet.</p>
-                {% endif %}
+                        </thead>
+                        <tbody class="justify-content-between">
+                            {% for viewport in user.viewports.all %}
+                                <tr class="">
+                                    <td>{{ viewport.name }}</td>
+                                    <td>{{ viewport.date_created }}</td>
+                                    <td>{{ viewport.livestreams.count }}</td>
+                                    <td>
+                                        <button class="delete-viewport-btn btn btn-sm btn-outline-danger" data-viewport-id="{{ viewport.id }}">Delete</button>
+                                        <button class="open-viewport-btn btn btn-sm btn-outline-secondary" data-viewport-id="{{ viewport.id }}">Open in New Tab</button>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                    {% else %}
+                    <p class="text-muted">You have not created any viewports yet.</p>
+                    {% endif %}
+                </div>
+
+                <div class="container list-container">
+                    {% if user.created_livestreams.count > 0 %}
+                    <h1 class="h3 mb-3 ">Streams</h1>
+                    <table class="table justify-content-between">
+                        <thead>
+                            <tr>
+                                <th scope="col">Stream Title</th>
+                                <th scope="col">Organization</th>
+                                <th scope="col">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody class="justify-content-between">
+                            {% for stream in user.created_livestreams.all %}
+                                <tr>
+                                    <td scope="row">{{ stream.title }}</td>
+                                    <td>{{ stream.agency }}</td>
+                                    <td>
+                                        <button class="stop-btn btn btn-sm btn-outline-danger" data-stream-id="{{ stream.id }}">Stop</button>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                    {% endif %}
+                </div>
             </div>
         </main>
         <script src="{% static 'dashboard/profile.js' %}"></script>

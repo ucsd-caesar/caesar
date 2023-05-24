@@ -11,10 +11,8 @@ class InviteUserForm(forms.Form):
         return email
     
 class SRTLinkForm(forms.Form):
-    title = forms.CharField(label='Title', required=True)
     srt_link = forms.URLField(
-        label='SRT Link',
+        label='RTSP Link',
         required=True,
-        widget=forms.TextInput(attrs={'placeholder': 'URL'})
+        widget=forms.TextInput(attrs={'placeholder': 'rtsp://your-url'})
     )
-    agency = forms.ModelChoiceField(Agency.objects.all(), required=True)

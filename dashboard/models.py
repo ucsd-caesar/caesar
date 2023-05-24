@@ -22,10 +22,11 @@ class Marker(models.Model):
 class Livestream(models.Model):
     title = models.CharField(max_length=255)
     source = models.CharField(max_length=255, default='')
-    agency = models.ForeignKey('Agency', on_delete=models.CASCADE, related_name='livestreams', default=None, null=True)
     created_by = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='created_livestreams')
-    hls = models.URLField(blank=True, null=True)
-    
+    type = models.CharField(max_length=255, default='rtsp')
+    groups = models.ManyToManyField(Group, related_name='livestreams', default=any) 
+    latest_frame = models.ImageField(upload_to='frames', blank=True, null=True) 
+
     def __str__(self):
         return self.title
     

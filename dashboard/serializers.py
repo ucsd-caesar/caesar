@@ -14,11 +14,10 @@ class AgencySerializer(serializers.ModelSerializer):
         fields = ("name","members")
 
 class LivestreamSerializer(serializers.ModelSerializer):
-    agency = serializers.StringRelatedField()
     created_by = serializers.SerializerMethodField()
     class Meta:
         model = Livestream
-        fields = ("id", "title", "source", "agency", "created_by")
+        fields = ("id", "title", "source", "groups", "created_by")
 
     def get_created_by(self, obj):
         return obj.created_by.username

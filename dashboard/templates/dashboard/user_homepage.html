@@ -50,6 +50,11 @@
 
                         </tbody>
                     </table>
+                    <!-- add form for publishing a stream-->
+                    <form method="POST">
+                        {{ form }}
+                        <button type="submit" class="btn  btn-sm btn-primary">Add Stream</button>
+                    </form>
                 </div>
 
                 <div class="container list-container">
@@ -61,7 +66,7 @@
                                 <th scope="col">Name</th>
                                 <th scope="col">Created At</th>
                                 <th scope="col">Stream Count</th>
-                                <th scope="col">Actions</th>
+                                <th scope="col"></th>
                             </tr>
                         </thead>
                         <tbody class="justify-content-between">
@@ -72,7 +77,7 @@
                                     <td>{{ viewport.livestreams.count }}</td>
                                     <td>
                                         <button class="delete-viewport-btn btn btn-sm btn-outline-danger" data-viewport-id="{{ viewport.id }}">Delete</button>
-                                        <button class="open-viewport-btn btn btn-sm btn-outline-secondary" data-viewport-id="{{ viewport.id }}">Open in New Tab</button>
+                                        <button class="open-viewport-btn btn btn-sm btn-outline-secondary" data-viewport-id="{{ viewport.id }}">View in New Tab</button>
                                     </td>
                                 </tr>
                             {% endfor %}
@@ -89,16 +94,16 @@
                     <table class="table justify-content-between">
                         <thead>
                             <tr>
-                                <th scope="col">Stream Title</th>
-                                <th scope="col">Organization</th>
-                                <th scope="col">Actions</th>
+                                <th scope="col">Title</th>
+                                <th scope="col">Visibility</th>
+                                <th scope="col"></th>
                             </tr>
                         </thead>
                         <tbody class="justify-content-between">
                             {% for stream in user.created_livestreams.all %}
                                 <tr>
                                     <td scope="row">{{ stream.title }}</td>
-                                    <td>{{ stream.agency }}</td>
+                                    <td>{{ stream.groups }}</td>
                                     <td>
                                         <button class="stop-btn btn btn-sm btn-outline-danger" data-stream-id="{{ stream.id }}">Stop</button>
                                     </td>

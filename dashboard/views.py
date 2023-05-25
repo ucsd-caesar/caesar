@@ -6,7 +6,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.http import JsonResponse, Http404
 from django.views import generic, View
 from django.views.generic.edit import FormView
-from django.views.decorators.http import require_http_methods
+from django.views.decorators.http import require_GET, require_POST
 from json import JSONDecodeError
 from django.http import JsonResponse
 from rest_framework.parsers import JSONParser
@@ -39,7 +39,7 @@ class GroupView(generic.DetailView):
     model = Group
     template_name = "dashboard/group_homepage.html"
 
-    @require_http_methods(["POST"])
+    @require_POST
     def invite_user(request, group_id):
         group = Group.objects.get(pk=group_id)
 
@@ -73,7 +73,6 @@ class LivestreamVisibilityView(LoginRequiredMixin, FormView):
         return kwargs
     
     # make success_url stay on the same page
-    @require_http_methods(["GET"])
     def get_success_url(self):
         return reverse('dashboard:user_homepage')
     
@@ -94,7 +93,7 @@ class LoginView(auth_views.LoginView):
     
 class SearchView(View):
 
-    @require_http_methods(["GET"])
+    @require_GET
     def get(self, request, *args, **kwargs):
         query = request.GET.get('q', '')
         if query:
@@ -110,7 +109,7 @@ class SearchView(View):
 class StreamAPIView(LoginRequiredMixin, views.APIView):
     serializer_class = LivestreamSerializer
 
-    @require_http_methods(["GET"])
+    @require_GET
     def get_serializer_context(self):
         return {
             'request': self.request,
@@ -118,12 +117,12 @@ class StreamAPIView(LoginRequiredMixin, views.APIView):
             'view': self
             }
     
-    @require_http_methods(["GET"])
+    @require_GET
     def get_serializer(self, *args, **kwargs):
         kwargs['context'] = self.get_serializer_context()
         return self.serializer_class(*args, **kwargs)
     
-    @require_http_methods(["POST"])
+    @require_POST
     def post(self, request):
         try:
             data = JSONParser().parse(request)
@@ -139,7 +138,6 @@ class StreamAPIView(LoginRequiredMixin, views.APIView):
 class StreamView(LoginRequiredMixin, UserPassesTestMixin, generic.TemplateView):
     template_name = "dashboard/stream.html"
     
-    @require_http_methods(["GET"])
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['is_authenticated'] = self.request.user.is_authenticated
@@ -158,7 +156,7 @@ class StreamView(LoginRequiredMixin, UserPassesTestMixin, generic.TemplateView):
 class UserAPIView(LoginRequiredMixin, views.APIView):
     serializer_class = CustomUserSerializer
 
-    @require_http_methods(["GET"])
+    @require_GET
     def get_serializer_context(self):
         return {
             'request': self.request,
@@ -166,12 +164,12 @@ class UserAPIView(LoginRequiredMixin, views.APIView):
             'view': self
             }
     
-    @require_http_methods(["GET"])
+    @require_GET
     def get_serializer(self, *args, **kwargs):
         kwargs['context'] = self.get_serializer_context()
         return self.serializer_class(*args, **kwargs)
     
-    @require_http_methods(["POST"])
+    @require_POST
     def post(self, request):
         try:
             data = JSONParser().parse(request)
@@ -192,20 +190,17 @@ class UserView(LoginRequiredMixin, FormView):
     template_name = "dashboard/user_homepage.html" 
     form_class = LivestreamVisibilityForm
 
-    @require_http_methods(["GET"])
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['user'] = self.request.user
         return context
     
-    @require_http_methods(["GET"])
     def get_form_kwargs(self):
         kwargs = super().get_form_kwargs()
         kwargs['user'] = self.request.user
         return kwargs
     
     # make success_url stay on the same page
-    @require_http_methods(["GET"])
     def get_success_url(self):
         return reverse('dashboard:user_homepage')
     
@@ -234,21 +229,19 @@ class ViewportView(generic.DetailView):
     template_name = "dashboard/viewport.html"
     
     # get the most recent viewport created by the user
-    @require_http_methods(["GET"])
     def get_object(self):
         user_id = self.kwargs['user_id']
         viewport_id = self.kwargs['viewport_id']
         return Viewport.objects.filter(user__id=user_id, id=viewport_id).latest('time_created')
     
     # return pk as the pk of the most recent viewport created by the user
-    @require_http_methods(["GET"])
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['user_id'] = self.kwargs['user_id']
         context['viewport_id'] = self.kwargs['viewport_id']
         return context
     
-    @require_http_methods(["POST"])
+    @require_POST
     def post(request):
         if request.method == 'POST':
             try:

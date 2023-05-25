@@ -182,34 +182,19 @@ class UserAPIView(LoginRequiredMixin, views.APIView):
         except JSONDecodeError:
             return JsonResponse({"result": "error","message": "Json decoding error"}, status= 400)    
         
-# TODO:
-# - create a new view to act as FormView
-#
-class UserView(LoginRequiredMixin, FormView):
+class UserView(LoginRequiredMixin, generic.TemplateView):
     model = CustomUser
     template_name = "dashboard/user_homepage.html" 
-    form_class = LivestreamVisibilityForm
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['user'] = self.request.user
+        context['visibilityForm'] = LivestreamVisibilityForm(user=self.request.user)
         return context
-    
-    def get_form_kwargs(self):
-        kwargs = super().get_form_kwargs()
-        kwargs['user'] = self.request.user
-        return kwargs
     
     # make success_url stay on the same page
     def get_success_url(self):
         return reverse('dashboard:user_homepage')
-    
-    # def form_valid(self, form):
-    #     livestream_id = form.cleaned_data.get('livestream_id')
-    #     livestream = Livestream.objects.get(pk=livestream_id)
-    #     livestream.groups.set(form.cleaned_data.get('groups'))
-    #     livestream.save()
-    #     return super().form_valid(form)
     
     def stop_stream(request, livestream_id):
         try:

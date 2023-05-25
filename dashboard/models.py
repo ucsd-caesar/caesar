@@ -20,28 +20,18 @@ class Marker(models.Model):
         return self.name
     
 class Livestream(models.Model):
-    title = models.CharField(max_length=255)
+    title = models.CharField(max_length=255, default='')
     source = models.CharField(max_length=255, default='')
+    type = models.CharField(max_length=255, default='', blank=True)
     created_by = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='created_livestreams')
-    type = models.CharField(max_length=255, default='rtsp')
-    groups = models.ManyToManyField(Group, related_name='livestreams', default=any) 
+    groups = models.ManyToManyField(Group, related_name='livestreams', blank=True) 
     latest_frame = models.ImageField(upload_to='frames', blank=True, null=True) 
 
     def __str__(self):
         return self.title
     
-    def get_title(self):
-        # returns the last part of the url only if the source starts with 'rtsp'
-        if self.source.startswith('rtsp'):
-            return self.source.split('/')[-1]
-        
-@receiver(post_save, sender=Livestream)
-def convert_source(sender, instance=None, created=False, **kwargs):
-    if created and instance.source.startswith('rtsp://'):
-        out_path = f'/dashboard/hls/{instance.id}.m3u8'
-        convert_to_hls.delay(instance.source, out_path)
-        instance.hls = out_path
-        instance.save()
+    def is_public(self):
+        return self.groups.filter(name="Public").exists()
     
 class Viewport(models.Model):
     name = models.CharField(max_length=255, default="Viewport")
@@ -49,18 +39,6 @@ class Viewport(models.Model):
     livestreams = models.ManyToManyField(Livestream, related_name='viewports')
     date_created = models.DateTimeField(auto_now_add=True)
     time_created = models.TimeField(auto_now_add=True)
-    
-class Agency(models.Model):
-    name = models.CharField(max_length=255)
-    members = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name='memberships')
-
-    @property
-    def getLivestreams(self):
-        # Returns all active livestreams from all of its members
-        return Livestream.objects.filter(created_by__in=self.members.all())
-
-    def __str__(self):
-        return self.name
     
 class CustomUserManager(BaseUserManager):
     def create_user(self, email, username, password=None):
@@ -103,10 +81,9 @@ class CustomUser(AbstractBaseUser):
     is_admin = models.BooleanField(default=False)
     is_active = models.BooleanField(default=True)
     is_superuser = models.BooleanField(default=False)
-    user_permissions = models.ManyToManyField(Agency, related_name='user_permissions')
     last_login = models.DateTimeField(auto_now=True)
     date_joined = models.DateTimeField(auto_now_add=True)
-    groups = models.ManyToManyField(Group, related_name='agency_members')
+    groups = models.ManyToManyField(Group, related_name='group_memberships', blank=True)
 
     objects = CustomUserManager()
 

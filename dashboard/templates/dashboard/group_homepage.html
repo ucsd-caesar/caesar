@@ -2,7 +2,7 @@
 <!DOCTYPE html>
 <html lang="en">
     <head>
-        <title>{{ agency.name }}</title>
+        <title>{{ group.name }}</title>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <link rel="stylesheet" href="{% static 'dashboard/profile.css' %}">
@@ -14,9 +14,9 @@
             </div>
         </header>
         <main class="form-signin w-100">
-            <h1 class="my-3 fw-normal text-center">{{ agency.name }}</h1>
+            <h1 class="my-3 fw-normal text-center">{{ group.name }}</h1>
             <div class="pl-3 text-center">
-                <h4>{{ agency.members.count }} {% if agency.members.count == 1 %}Member{% else %}Members{% endif %}</h2>
+                <h4>{{ group.members.count }} {% if group.members.count == 1 %}Member{% else %}Members{% endif %}</h2>
             </div>
         </main>
     </body>

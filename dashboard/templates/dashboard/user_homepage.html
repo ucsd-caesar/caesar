@@ -6,8 +6,9 @@
         <meta charset="utf-8">
         {% csrf_token %}
         <meta name="viewport" content="width=device-width, initial-scale=1">
-        <link rel="stylesheet" href="{% static 'dashboard/profile.css' %}">
         <script src="{% static 'dashboard/jquery.js' %}"></script>
+        <script type="text/javascript" src="{% static 'dashboard/bootstrap/bootstrap.bundle.min.js' %}"></script>
+        <link rel="stylesheet" href="{% static 'dashboard/profile.css' %}">
     </head>
     <body class="text-center">
         <header class="p-3 text-bg-dark">
@@ -50,11 +51,6 @@
 
                         </tbody>
                     </table>
-                    <!-- add form for publishing a stream-->
-                    <form method="POST">
-                        {{ form }}
-                        <button type="submit" class="btn  btn-sm btn-primary">Add Stream</button>
-                    </form>
                 </div>
 
                 <div class="container list-container">
@@ -103,7 +99,44 @@
                             {% for stream in user.created_livestreams.all %}
                                 <tr>
                                     <td scope="row">{{ stream.title }}</td>
-                                    <td>{{ stream.groups }}</td>
+                                    <td>
+                                        <div class="dropdown show">
+                                            <a class="btn btn-sm btn-secondary dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-bs-toggle='dropdown' aria-haspopup="true" aria-expanded="false">
+                                              {% for group in stream.groups.all %}
+                                                {{ group.name }}
+                                              {% endfor %}
+                                            </a>
+                                            <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+                                                <form action="/dashboard/change-visibility/{{ stream.id }}/" method="post">
+                                                    {% csrf_token %}
+                                                    {% if stream.is_public %}
+                                                        <div class="form-check">
+                                                            <input class="form-check-input" type="checkbox" value="private" name="private_public" onchange="uncheckOthers(this);">
+                                                            <label class="form-check-label" for="private">
+                                                                Private
+                                                            </label>
+                                                        </div>
+                                                    {% else %}
+                                                        <div class="form-check">
+                                                            <input class="form-check-input" type="checkbox" value="public" name="private_public" onchange="uncheckOthers(this);">
+                                                            <label class="form-check-label" for="public">
+                                                                Public
+                                                            </label>
+                                                        </div>
+                                                    {% endif %}
+                                                    {% for group in form.groups.field.queryset %}
+                                                        <div class="form-check">
+                                                            <input class="form-check-input" type="checkbox" value="{{ group.id }}" name="{{ group.name }}" id="group{{ forloop.counter }}" onchange="uncheckPrivatePublic(this);">
+                                                            <label class="form-check-label" for="group{{ forloop.counter }}">
+                                                            {{ group.name }}
+                                                            </label>
+                                                        </div>
+                                                    {% endfor %}
+                                                    <button type="submit" class="btn btn-primary submit-btn" data-stream-id="{{ stream.id }}">Save</button>
+                                                </form>
+                                            </div>
+                                          </div>
+                                    </td>
                                     <td>
                                         <button class="stop-btn btn btn-sm btn-outline-danger" data-stream-id="{{ stream.id }}">Stop</button>
                                     </td>

@@ -12,9 +12,9 @@ class MarkerViewSet(viewsets.ModelViewSet):
     queryset = Marker.objects.all()
     serializer_class = MarkerSerializer
 
-class AgencyViewSet(viewsets.ModelViewSet):
-    queryset = Agency.objects.all()
-    serializer_class = AgencySerializer
+class GroupViewSet(viewsets.ModelViewSet):
+    queryset = Group.objects.all()
+    serializer_class = GroupSerializer
 
 class UserViewSet(viewsets.ModelViewSet):
     queryset = CustomUser.objects.all()

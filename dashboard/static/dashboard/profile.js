@@ -63,52 +63,28 @@ deleteBtns.forEach(btn => {
     });
 });
 
-// uncheck other checkboxes
-function uncheckOthers(checkbox) {
+// uncheck private/public checkbox
+function uncheckPrivatePublic(checkbox) {
     if (checkbox.checked) {
-        var value = checkbox.value;
-        var checkboxes = document.querySelectorAll('input[type="checkbox"]');
-        for (var i = 0; i < checkboxes.length; i++) {
-            if (checkboxes[i].value != value) {
-                checkboxes[i].checked = false;
+        // only get nongroupCheckboxes in the same form
+        const form = checkbox.closest('form');
+        const nongroupCheckboxes = form.querySelectorAll('input[type="checkbox"].nongroup');
+        var classList = checkbox.classList;
+
+        if (classList.contains('nongroup')) {
+            // uncheck all other checkboxes
+            var checkboxes = form.querySelectorAll('input[type="checkbox"]');
+            for (var i = 0; i < checkboxes.length; i++) {
+                if (checkboxes[i].id != checkbox.id){
+                    checkboxes[i].checked = false;
+                }
+            }
+        }
+        else {
+            // uncheck the nongroupCheckboxes
+            for (var i = 0; i < nongroupCheckboxes.length; i++) {
+                nongroupCheckboxes[i].checked = false;
             }
         }
     }
 }
-
-// uncheck private/public checkbox
-function uncheckPrivatePublic(checkbox) {
-    if (checkbox.checked) {
-        var value = checkbox.value;
-        var checkboxes = document.getElementsByName('private_public');
-        for (var i = 0; i < checkboxes.length; i++) {
-            checkboxes[i].checked = false;
-        }
-    }
-}
-
-// add event listener for each form's submit button
-/*
-const submitBtns = document.querySelectorAll('.submit-btn');
-submitBtns.forEach(btn => {
-    btn.addEventListener('click', async () => {
-        livestream_id = btn.getAttribute('data-stream-id');
-
-        const response = await fetch(`/dashboard/change-visibility/${livestream_id}/`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/x-www-form-urlencoded',
-                'X-CSRFToken': csrftoken,
-            },
-            body: new URLSearchParams({livestream_id: livestreamId}),
-        });
-
-        const result = await response.json();
-        if (result.status === 'success') {
-            location.reload();
-        } else {
-            console.error(result.message);
-        }
-    });
-});
-*/

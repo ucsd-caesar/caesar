@@ -107,26 +107,20 @@
                                               {% endfor %}
                                             </a>
                                             <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
-                                                <form action="/dashboard/change-visibility/{{ stream.id }}/" method="post">
+                                                <form action="{% url 'dashboard:change_visibility' stream.id %}" method="post">
                                                     {% csrf_token %}
-                                                    {% if stream.is_public %}
+                                                    {{ visibility_form.form_name }}
+                                                    <input type="hidden" name="livestream_id" value="{{ stream.id }}"/>
+
+                                                    {% for group in visibility_form.groups.field.queryset %}
                                                         <div class="form-check">
-                                                            <input class="form-check-input" type="checkbox" value="private" name="private_public" onchange="uncheckOthers(this);">
-                                                            <label class="form-check-label" for="private">
-                                                                Private
-                                                            </label>
-                                                        </div>
-                                                    {% else %}
-                                                        <div class="form-check">
-                                                            <input class="form-check-input" type="checkbox" value="public" name="private_public" onchange="uncheckOthers(this);">
-                                                            <label class="form-check-label" for="public">
-                                                                Public
-                                                            </label>
-                                                        </div>
-                                                    {% endif %}
-                                                    {% for group in visibilityForm.groups.field.queryset %}
-                                                        <div class="form-check">
-                                                            <input class="form-check-input" type="checkbox" value="{{ group.id }}" name="{{ group.name }}" id="group{{ forloop.counter }}" onchange="uncheckPrivatePublic(this);">
+                                                            {% if group in stream.groups.all %}
+                                                                <input class="form-check-input" type="checkbox" value="{{ group.id }}" name="groups" id="group{{ forloop.counter }}" onchange="uncheckPrivatePublic(this);" checked>
+                                                            {% elif group in user.groups.all %}
+                                                                <input class="form-check-input" type="checkbox" value="{{ group.id}}" name="groups" id="group{{ forloop.counter }}" onchange="uncheckPrivatePublic(this);">
+                                                            {% else %}
+                                                                <input class="form-check-input nongroup" type="checkbox" value="{{ group.id}}" name="groups" id="group{{ forloop.counter }}" onchange="uncheckPrivatePublic(this);">
+                                                            {% endif %}
                                                             <label class="form-check-label" for="group{{ forloop.counter }}">
                                                             {{ group.name }}
                                                             </label>

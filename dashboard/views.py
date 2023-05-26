@@ -3,7 +3,7 @@ from django.urls import reverse
 from django.contrib.auth import views as auth_views
 from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
-from django.http import JsonResponse, Http404
+from django.http import JsonResponse, Http404, HttpResponseNotFound
 from django.views import generic, View
 from django.views.generic.edit import FormView
 from django.views.decorators.http import require_GET, require_POST
@@ -16,6 +16,9 @@ from django.db.models import Q
 from .models import Livestream, CustomUser
 from .serializers import *
 from .forms import *
+
+import logging
+logger = logging.getLogger(__name__)
 
 class DashboardView(generic.ListView):
     template_name = "dashboard/dashboard.html"
@@ -108,7 +111,7 @@ class SearchView(View):
     
 class StreamAPIView(LoginRequiredMixin, views.APIView):
     serializer_class = LivestreamSerializer
-
+    
     @require_GET
     def get_serializer_context(self):
         return {
@@ -182,20 +185,66 @@ class UserAPIView(LoginRequiredMixin, views.APIView):
         except JSONDecodeError:
             return JsonResponse({"result": "error","message": "Json decoding error"}, status= 400)    
         
-class UserView(LoginRequiredMixin, generic.TemplateView):
+class UserView(LoginRequiredMixin, FormView):
     model = CustomUser
     template_name = "dashboard/user_homepage.html" 
+    form_class = LivestreamVisibilityForm  # This is used only for the GET request.
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['user'] = self.request.user
-        context['visibilityForm'] = LivestreamVisibilityForm(user=self.request.user)
+        context['visibility_form'] = LivestreamVisibilityForm(user=self.request.user)
         return context
     
-    # make success_url stay on the same page
-    def get_success_url(self):
-        return reverse('dashboard:user_homepage')
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs['user'] = self.request.user
+        return kwargs
     
+    def post(self, request, *args, **kwargs):
+        logger.info("POST request: ")
+        logger.info(request.POST)
+        form_name = request.POST.get('form_name')
+        logger.info("form_name: ")
+        logger.info(form_name)
+
+        if form_name == 'visibility_form':
+            form_class = LivestreamVisibilityForm
+        else:
+            return self.form_invalid(None)
+        
+        form = self.get_form(form_class)
+        logger.info("post_data after form: ")
+        logger.info(form)
+
+        if form.is_valid():
+            logger.info("form is valid")
+            logger.info
+            form.livestream_id = request.POST.get('livestream_id')
+            return self.form_valid(form)
+        else:
+            return self.form_invalid(form)
+            
+    def form_valid(self, form):
+            livestream_id = form.cleaned_data.get('livestream_id')
+            try:
+                livestream = Livestream.objects.get(pk=livestream_id)
+            except Livestream.DoesNotExist:
+                return HttpResponseNotFound("Livestream not found")
+            
+            selected_groups = form.cleaned_data.get('groups')
+            livestream.groups.set(selected_groups)
+            livestream.save()
+
+            return super().form_valid(form)
+    
+    def form_invalid(self, form):
+        return super().form_invalid(form)
+
+    def get_success_url(self):
+        return reverse('dashboard:user', kwargs={'pk': self.request.user.id})
+
+    #TODO: refactor this into the post method above and add a formview to make the request
     def stop_stream(request, livestream_id):
         try:
             livestream = Livestream.objects.get(pk=livestream_id)

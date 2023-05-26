@@ -12,7 +12,7 @@ urlpatterns = [
 
     path("user/<int:pk>/", views.UserView.as_view(), name="user"),
     path("user/<int:livestream_id>/delete/", views.UserView.stop_stream, name="stop_stream"),
-    path("change-visibility/<int:livestream_id>/", views.LivestreamVisibilityView.as_view(), name="change_visibility"),
+    path("change-visibility/<int:livestream_id>/", views.UserView.as_view(), name="change_visibility"),
     path("stream/", views.StreamView.as_view(), name="stream"),
 
     path("group/<int:pk>/", views.GroupView.as_view(), name="group_homepage"),

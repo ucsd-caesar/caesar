@@ -14,6 +14,7 @@ urlpatterns = [
     path("user/<int:livestream_id>/delete/", views.UserView.stop_stream, name="stop_stream"),
     path("change-visibility/<int:livestream_id>/", views.UserView.as_view(), name="change_visibility"),
     path("stream/", views.StreamView.as_view(), name="stream"),
+    path("auth_stream/", views.auth_stream, name="auth_stream"),
 
     path("group/<int:pk>/", views.GroupView.as_view(), name="group_homepage"),
     path("group/<int:group_id>/invite", views.GroupView.invite_user, name="invite_user"),

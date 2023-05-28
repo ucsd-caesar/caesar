@@ -7,6 +7,7 @@ from django.http import JsonResponse, Http404, HttpResponseNotFound
 from django.views import generic, View
 from django.views.generic.edit import FormView
 from django.views.decorators.http import require_GET, require_POST
+from django.views.decorators.csrf import csrf_exempt
 from json import JSONDecodeError
 from django.http import JsonResponse
 from rest_framework.parsers import JSONParser
@@ -293,3 +294,41 @@ class ViewportView(generic.DetailView):
         viewport = Viewport.objects.get(pk=viewport_id)
         viewport.delete()
         return JsonResponse({"status": "success", "message": "Viewport deleted"}, status=200)
+
+@csrf_exempt
+def auth_stream(request):
+    """ Handle incoming api request from media server to authenticate stream
+    """
+    if request.method == 'POST':
+        try:
+            data = JSONParser().parse(request) 
+            logger.info(data)
+            userInput = data.get('user')
+            passInput = data.get('password')
+        except KeyError:
+            return JsonResponse({"status": "error", "message": "No credentials provided"}, status=401)
+        try:
+            user = CustomUser.objects.get(username=userInput)
+            if user.check_password(passInput):
+                post_stream(data)
+                return JsonResponse({"status": "success"}, status=200)
+            else:
+                return JsonResponse({"status": "error", "message": "Incorrect password"}, status=401)
+        except CustomUser.DoesNotExist:
+            return JsonResponse({"status": "error", "message": "User not found"}, status=404)
+    return JsonResponse({"status": "error", "message": "Invalid request method"}, status=405)
+
+def post_stream(data):
+    """ Post new stream to database
+    """
+    username = data.get('user')
+    created_by_id = CustomUser.objects.get(username=username).id
+    path = data.get('path')
+    try:
+        serializer = LivestreamSerializer(data={'title': path, 'source': 'rtsp://stream.kleinfourlabs.com:8888/'+path, 'created_by_id': created_by_id})
+        if serializer.is_valid():
+            serializer.save()
+            return JsonResponse(serializer.data, status=status.HTTP_201_CREATED)
+        return JsonResponse(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    except JSONDecodeError:
+        return JsonResponse({"status": "error", "message": "No data provided"}, status=400)

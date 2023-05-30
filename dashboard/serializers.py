@@ -38,6 +38,23 @@ class LivestreamSerializer(serializers.ModelSerializer):
         else:
             for group in groups:
                 instance.groups.add(group)
+
+        # specify 'type' field based on source
+        source = validated_data.get('source', None)
+        if source is not None:
+            if source.startswith('rtmp'):
+                instance.type = 'rtmp'
+            elif source.startswith('rtsp'):
+                instance.type = 'rtsp'
+            elif source.startswith('hls'):
+                instance.type = 'hls'
+            elif source.startswith('webrtc'):
+                instance.type = 'webrtc'
+            elif source.startswith('http'):
+                instance.type = 'http'
+            else:
+                instance.type = 'other'
+
         instance.save()
         return instance
 

@@ -148,4 +148,47 @@ class LivestreamAPITests(APITestCase):
         self.assertEqual(newStream.groups.count(), 1)
         self.assertEqual(newStream.groups.first().name, "Admin")
 
+    def test_create_multiple_types_livestream(self):
+        self.data["source"] = "rtsp://testSource"
+        response = self.client.post(reverse('livestream-list'), self.data, format='json')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        newStream = Livestream.objects.get(id=response.data["id"])
+        self.assertEqual(Livestream.objects.count(), 1)
+        self.assertEqual(newStream.type, "rtsp")
+
+        self.data["source"] = "rtmp://testSource"
+        response = self.client.post(reverse('livestream-list'), self.data, format='json')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        newStream = Livestream.objects.get(id=response.data["id"])
+        self.assertEqual(Livestream.objects.count(), 2)
+        self.assertEqual(newStream.type, "rtmp")
+
+        self.data["source"] = "hls://testSource"
+        response = self.client.post(reverse('livestream-list'), self.data, format='json')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        newStream = Livestream.objects.get(id=response.data["id"])
+        self.assertEqual(Livestream.objects.count(), 3)
+        self.assertEqual(newStream.type, "hls")
+
+        self.data["source"] = "webrtc://testSource"
+        response = self.client.post(reverse('livestream-list'), self.data, format='json')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        newStream = Livestream.objects.get(id=response.data["id"])
+        self.assertEqual(Livestream.objects.count(), 4)
+        self.assertEqual(newStream.type, "webrtc")
+
+        self.data["source"] = "http://testSource"
+        response = self.client.post(reverse('livestream-list'), self.data, format='json')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        newStream = Livestream.objects.get(id=response.data["id"])
+        self.assertEqual(Livestream.objects.count(), 5)
+        self.assertEqual(newStream.type, "http")
+
+        self.data["source"] = "somethingelse://testSource"
+        response = self.client.post(reverse('livestream-list'), self.data, format='json')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        newStream = Livestream.objects.get(id=response.data["id"])
+        self.assertEqual(Livestream.objects.count(), 6)
+        self.assertEqual(newStream.type, "other")
+
 

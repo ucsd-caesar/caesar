@@ -1,19 +1,25 @@
 from django.shortcuts import render, redirect
 from django.urls import reverse
-from django.contrib.auth import views as auth_views
+
 from django.contrib import messages
+from django.contrib.auth import views as auth_views
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
+
 from django.http import JsonResponse, Http404, HttpResponseNotFound
+from json import JSONDecodeError
+
 from django.views import generic, View
 from django.views.generic.edit import FormView
 from django.views.decorators.http import require_GET, require_POST
 from django.views.decorators.csrf import csrf_exempt
-from json import JSONDecodeError
-from django.http import JsonResponse
-from rest_framework.parsers import JSONParser
+
 from rest_framework import views, status
+from rest_framework.parsers import JSONParser
 from rest_framework.response import Response
+from rest_framework.decorators import api_view
+
 from django.db.models import Q
+
 from .models import Livestream, CustomUser
 from .serializers import *
 from .forms import *
@@ -60,32 +66,6 @@ class GroupView(generic.DetailView):
             form = InviteUserForm()
 
         return render(request, 'dashboard/invite_user.html', {'form': form, 'group': group})
-
-class LivestreamVisibilityView(LoginRequiredMixin, FormView):
-    model = Livestream
-    template_name = "dashboard/user_homepage.html" 
-    form_class = LivestreamVisibilityForm
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['user'] = self.request.user
-        return context
-    
-    def get_form_kwargs(self):
-        kwargs = super().get_form_kwargs()
-        kwargs['user'] = self.request.user
-        return kwargs
-    
-    # make success_url stay on the same page
-    def get_success_url(self):
-        return reverse('dashboard:user_homepage')
-    
-    def form_valid(self, form):
-        livestream_id = form.cleaned_data.get('livestream_id')
-        livestream = Livestream.objects.get(pk=livestream_id)
-        livestream.groups.set(form.cleaned_data.get('groups'))
-        livestream.save()
-        return self.get_success_url(self)
 
 class LoginView(auth_views.LoginView):
     model = CustomUser
@@ -302,7 +282,6 @@ def auth_stream(request):
     if request.method == 'POST':
         try:
             data = JSONParser().parse(request) 
-            logger.info(data)
             userInput = data.get('user')
             passInput = data.get('password')
         except KeyError:
@@ -325,7 +304,7 @@ def post_stream(data):
     created_by_id = CustomUser.objects.get(username=username).id
     path = data.get('path')
     try:
-        serializer = LivestreamSerializer(data={'title': path, 'source': 'rtsp://stream.kleinfourlabs.com:8888/'+path, 'created_by_id': created_by_id})
+        serializer = LivestreamSerializer(data={'title': path, 'source': 'rtsp://localhost:8888/'+path, 'created_by_id': created_by_id})
         if serializer.is_valid():
             serializer.save()
             return JsonResponse(serializer.data, status=status.HTTP_201_CREATED)

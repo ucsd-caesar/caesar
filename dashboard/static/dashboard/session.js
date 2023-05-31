@@ -6,6 +6,6 @@ function updateLoginBtn(isAuthenticated, id) {
         loginBtn.href = '/dashboard/user/' + id;
     } else {
         loginBtn.innerHTML = 'Login';
-        loginBtn.href = '/dashboard/login';
+        loginBtn.href = '/';
     }
 }

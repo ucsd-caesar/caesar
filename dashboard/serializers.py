@@ -20,7 +20,7 @@ class LivestreamSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Livestream
-        fields = ("id", "title", "source", "groups", "created_by", "created_by_id")
+        fields = ("id", "title", "source", "groups", "created_by", "created_by_id", "is_live")
     
     def get_created_by(self, obj):
         return obj.created_by.username

@@ -188,6 +188,7 @@ document.addEventListener('DOMContentLoaded', () => {
             <div class="card">
             <a href="#" class="btn p-0" target="_blank" rel="noopener noreferrer" role="button">
                 <img class="card-img-top" data-id="{{ stream.id }}" src="https://cameras.alertcalifornia.org/public-camera-data/Axis-AlisoLaguna1/latest-frame.jpg?rqts=1683834051,Aliso" focusable="true" _mstaria-label="4468347" _mstHash="13" style="direction: ltr; text-align: left;"/>
+                <iframe class="card-img-top" id="stream-{{ stream.id }}" src="{{ stream.source }}" data-id="{{ stream.id }}" data-source="{{ stream.source }}" data-title="{{ stream.title }}" data-agency="{{ stream.agency }}" data-creator="{{ stream.created_by.username }}" focusable="true" _mstaria-label="4468347" _mstHash="13" style="direction: ltr; text-align: left;"></iframe>
             </a>
             <div class="card-body d-flex flex-column p-0">
                 <div class="display-info">
@@ -217,11 +218,11 @@ document.addEventListener('DOMContentLoaded', () => {
         cardDiv.classList.add('right-card', 'p-0');
 
         // create live-img and set src to the source of the stream with id == buttonId
-        const liveImg = document.createElement('img');
-        liveImg.classList.add('card-img-top');
-        liveImg.src = image.getAttribute('data-source');
-        liveImg.setAttribute('data-id', id);
-        observer.observe(liveImg); // add observer to liveimg for periodic updates
+        const iframe = document.createElement('iframe');
+        iframe.classList.add('card-img-top');
+        iframe.src = image.getAttribute('data-source');
+        iframe.setAttribute('data-id', id);
+        //observer.observe(iframe); // add observer to liveimg for periodic updates
         // add link to view stream in new window
         const alink = document.createElement('a');;
         alink.href = image.getAttribute('data-source');
@@ -229,7 +230,7 @@ document.addEventListener('DOMContentLoaded', () => {
         alink.rel = 'noopener noreferrer';
         alink.role = 'button';
         // put image inside the link
-        alink.appendChild(liveImg);
+        alink.appendChild(iframe);
         // add alink to cardDiv
         cardDiv.appendChild(alink);
 
@@ -244,18 +245,14 @@ document.addEventListener('DOMContentLoaded', () => {
         const flexContainer = document.createElement('div');
         flexContainer.classList.add('d-flex', 'justify-content-between');
         
-        // create stream-title, stream-agency, stream-creator
+        // create stream-title, stream-creator
         const streamTitle = document.createElement('p');
         streamTitle.classList.add('card-text');
-        const streamAgency = document.createElement('p');
-        streamAgency.classList.add('text-muted');
         const streamCreator = document.createElement('p');
         streamCreator.classList.add('text-muted');
         streamTitle.innerHTML = image.getAttribute('data-title');
-        streamAgency.innerHTML = image.getAttribute('data-agency');
         streamCreator.innerHTML = image.getAttribute('data-creator');
         flexContainer.appendChild(streamTitle);
-        flexContainer.appendChild(streamAgency);
         flexContainer.appendChild(streamCreator);
 
         // create btn-group

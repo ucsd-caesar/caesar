@@ -8,7 +8,6 @@ app_name = "dashboard"
 urlpatterns = [
     path("", views.DashboardView.as_view(), name="dashboard"),
     path('search/', views.SearchView.as_view(), name='search'),
-    path("login/", views.LoginView.as_view(), name="login"),
 
     path("user/<int:pk>/", views.UserView.as_view(), name="user"),
     path("user/<int:livestream_id>/delete/", views.UserView.stop_stream, name="stop_stream"),

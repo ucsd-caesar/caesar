@@ -81,23 +81,9 @@
               {% for stream in livestreams %}
                   <div id="col-{{ stream.id }}" class="col p-0">
                     <div class="card">
-                      {% if "http" in stream.source %}
-                        {% with stream.source|replace_string:'latest-frame,latest-thumb' as thumbnail_url %}
-                          <a href="{{ stream.source }}" class="thumbnail-btn btn p-0" target="_blank" rel="noopener noreferrer" role="button">
-                            <img id="stream-{{ stream.id }}" src="{{ thumbnail_url }}" data-id="{{ stream.id }}" data-source="{{ stream.source }}" data-title="{{ stream.title }}" data-agency="{{ stream.agency }}" data-creator="{{ stream.created_by.username }}" class="card-img-top" focusable="true" _mstaria-label="4468347" _mstHash="13" style="direction: ltr; text-align: left;"/>
-                          </a>
-                        {% endwith %}
-                      {% endif %}
-
-                      {% if "rtsp" in stream.source %}
-                        {% with stream.source|replace_string:'rtsp,http' as hls_url %}
-                          <a href="{{ hls_url }}" class="thumbnail-btn btn p-0" target="_blank" rel="noopener noreferrer" role="button">
-                            <video id="stream-{{ stream.id }}" data-id="{{ stream.id }}" data-source="{{ stream.source }}" data-title="{{ stream.title }}" data-agency="{{ stream.agency }}" data-creator="{{ stream.created_by.username }}" class="card-img-top" focusable="true" _mstaria-label="4468347" _mstHash="13" style="direction: ltr; text-align: left;">
-                              <source src="{{ hls_url }}" type="video/mp4">
-                            </video>
-                          </a>
-                        {% endwith %}
-                      {% endif %}
+                        <a href="{{ stream.source }}" class="thumbnail-btn btn p-0" target="_blank" rel="noopener noreferrer" role="button">
+                          <iframe id="stream-{{ stream.id }}" src="{{ stream.source }}" data-id="{{ stream.id }}" data-source="{{ stream.source }}" data-title="{{ stream.title }}" data-agency="{{ stream.agency }}" data-creator="{{ stream.created_by.username }}" class="card-img-top" focusable="true" _mstaria-label="4468347" _mstHash="13" style="direction: ltr; text-align: left;"></iframe>
+                        </a>
                       <div class="card-body d-flex flex-column p-0">
                         <div class="stream-name">
                           <p class=" pl-0 ml-0">{{ stream.title }}</p>

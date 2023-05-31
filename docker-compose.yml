@@ -34,6 +34,16 @@ services:
       - 6379:6379
     restart: on-failure
 
+  mediamtx:
+    image: aler9/rtsp-simple-server
+    volumes:
+      - ./dev/mediamtx/mediamtx.yml:/mediamtx.yml
+    ports:
+      - 8554:8554
+      - 8888:8888
+      - 9997:9997
+    restart: on-failure
+
 volumes:
   postgres_data:
   redis_data:

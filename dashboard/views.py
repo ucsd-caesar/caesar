@@ -5,7 +5,7 @@ from django.contrib import messages
 from django.contrib.auth import views as auth_views
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 
-from django.http import JsonResponse, Http404, HttpResponseNotFound
+from django.http import JsonResponse, Http404, HttpResponseNotFound, HttpRequest
 from json import JSONDecodeError
 
 from django.views import generic, View
@@ -15,11 +15,15 @@ from django.views.decorators.csrf import csrf_exempt
 
 from rest_framework import views, status
 from rest_framework.parsers import JSONParser
+from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
 
 from django.db.models import Q
 
+from asgiref.sync import async_to_sync, sync_to_async
+
+from config.tasks import auth_login, auth_path, post_stream
 from .models import Livestream, CustomUser
 from .serializers import *
 from .forms import *
@@ -66,14 +70,6 @@ class GroupView(generic.DetailView):
             form = InviteUserForm()
 
         return render(request, 'dashboard/invite_user.html', {'form': form, 'group': group})
-
-class LoginView(auth_views.LoginView):
-    model = CustomUser
-    template_name = "dashboard/login.html"
-
-    def get_success_url(self):
-        # redirect to /dashboard/
-        return reverse('dashboard:dashboard')
     
 class SearchView(View):
 
@@ -280,34 +276,26 @@ def auth_stream(request):
     """ Handle incoming api request from media server to authenticate stream
     """
     if request.method == 'POST':
-        try:
-            data = JSONParser().parse(request) 
+        try: # check if request contains user credentials
+            data = JSONParser().parse(request)
+            logger.info(data)
             userInput = data.get('user')
             passInput = data.get('password')
+            pathInput = data.get('path') 
+
+            # request credentials from mediamtx after receiving first request (always empty)
+            if userInput == "" and passInput == "":
+                return JsonResponse({"status": "error", "message": "Empty credentials provided"}, status=401)
         except KeyError:
             return JsonResponse({"status": "error", "message": "No credentials provided"}, status=401)
-        try:
-            user = CustomUser.objects.get(username=userInput)
-            if user.check_password(passInput):
-                post_stream(data)
-                return JsonResponse({"status": "success"}, status=200)
-            else:
-                return JsonResponse({"status": "error", "message": "Incorrect password"}, status=401)
-        except CustomUser.DoesNotExist:
-            return JsonResponse({"status": "error", "message": "User not found"}, status=404)
+        
+        # Offload the authentication and stream posting to Celery
+        # auth_login -> auth_path
+        is_authenticated = auth_login.apply_async((userInput, passInput), link=auth_path.s(pathInput))
+        if is_authenticated.get():
+            result = post_stream.s(data)()
+            return result
+        else:
+            return JsonResponse({"status": "error", "message": "Invalid credentials"}, status=401)
+            
     return JsonResponse({"status": "error", "message": "Invalid request method"}, status=405)
-
-def post_stream(data):
-    """ Post new stream to database
-    """
-    username = data.get('user')
-    created_by_id = CustomUser.objects.get(username=username).id
-    path = data.get('path')
-    try:
-        serializer = LivestreamSerializer(data={'title': path, 'source': 'rtsp://localhost:8888/'+path, 'created_by_id': created_by_id})
-        if serializer.is_valid():
-            serializer.save()
-            return JsonResponse(serializer.data, status=status.HTTP_201_CREATED)
-        return JsonResponse(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-    except JSONDecodeError:
-        return JsonResponse({"status": "error", "message": "No data provided"}, status=400)

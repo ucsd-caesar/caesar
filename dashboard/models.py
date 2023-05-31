@@ -3,7 +3,6 @@ from django.dispatch import receiver
 from django.db.models.signals import post_save
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, Group
 from django.conf import settings
-from config.tasks import convert_to_hls
 
 class MapChoice(models.Model):
     name = models.CharField(max_length=255)
@@ -26,6 +25,7 @@ class Livestream(models.Model):
     created_by = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='created_livestreams')
     groups = models.ManyToManyField(Group, related_name='livestreams', blank=True) 
     latest_frame = models.ImageField(upload_to='frames', blank=True, null=True) 
+    is_live = models.BooleanField(default=True)
 
     def __str__(self):
         return self.title

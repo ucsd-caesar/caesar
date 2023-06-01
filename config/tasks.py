@@ -1,6 +1,6 @@
-from celery import shared_task
+from celery import shared_task, group
 
-from django.http import JsonResponse
+from django.http import JsonResponse, QueryDict
 from json import JSONDecodeError
 
 from dashboard.models import CustomUser, Livestream
@@ -8,12 +8,11 @@ from dashboard.serializers import LivestreamSerializer
 
 from rest_framework import status
 
-import httpx
 import requests
 import logging
 logger = logging.getLogger(__name__)
 
-@shared_task(time_limit=3)
+@shared_task(task_time_limit=3)
 def auth_login(username, password):
     """ Authenticate CustomUser with username=username and password=password
         Returns True if user exists and password is correct, False otherwise
@@ -29,22 +28,17 @@ def auth_login(username, password):
     except CustomUser.DoesNotExist:
         return False
 
-@shared_task(time_limit=3)
-def auth_path(is_authorized, path):
+@shared_task(task_time_limit=3)
+def auth_path(path):
     """ Gets path from mediamtx API with name=path
-        Returns a json response if successful, None otherwise
+        Returns True if the path exists, False otherwise
         @Requires: is_authorized is the return value of auth_login
     """
-    if is_authorized:
-        logger.info("getting path data for '" + path + "'...")
-        response = requests.get("http://mediamtx:9997/v2/paths/get/" + path)
-        if response.status_code == 200:
-            logger.info(response.content)
-            return True
-        else:
-            return False
+    logger.info("getting path data for '" + path + "'...")
+    response = requests.get("http://mediamtx:9997/v2/paths/get/" + path)
+    if response.status_code == 200:
+        return True
     else:
-        logger.info("user not authorized to access path, returning False")
         return False
 
 @shared_task

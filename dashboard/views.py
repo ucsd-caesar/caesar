@@ -23,7 +23,7 @@ from django.db.models import Q
 
 from asgiref.sync import async_to_sync, sync_to_async
 
-from config.tasks import auth_login, auth_path, post_stream
+from config.tasks import auth_login, auth_path, post_stream, group
 from .models import Livestream, CustomUser
 from .serializers import *
 from .forms import *
@@ -291,10 +291,27 @@ def auth_stream(request):
         
         # Offload the authentication and stream posting to Celery
         # auth_login -> auth_path
-        is_authenticated = auth_login.apply_async((userInput, passInput), link=auth_path.s(pathInput))
-        if is_authenticated.get():
-            result = post_stream.s(data)()
-            return result
+        is_authorized = auth_login.delay(userInput, passInput)
+        print(is_authorized.get())
+        if is_authorized.get() == True:
+            # check if path name matches id of user
+            userId = CustomUser.objects.get(username=userInput).id
+            if (str(userId) == pathInput):
+                # TODO: fix deadlock when calling auth_path with requests library
+                #
+                # call auth_path to check if path exists
+                # logger.info("calling requests.get ...")
+                # path_exists = auth_path.delay(pathInput)
+                # print(path_exists.content)
+                # if path_exists.status_code == True:
+                #     result = post_stream.delay(data)
+                #     return result.get()
+                # else:
+                #     return JsonResponse({"status": "error", "message": "Invalid path"}, status=401)
+                result = post_stream.delay(data)
+                return result.get()
+            else:
+                return JsonResponse({"status": "error", "message": "Invalid path"}, status=401)
         else:
             return JsonResponse({"status": "error", "message": "Invalid credentials"}, status=401)
             

@@ -36,9 +36,7 @@
                             <div class="w-100"></div>
                         {% endif %}
                         <div class="col p-0">
-                                <a href="{{ stream.source }}" class="btn p-0" target="_blank" rel="noopener noreferrer" role="button">
-                                    <img class="img-fluid card-img-top" src="{{ stream.source }}" data-id="{{ stream.id }}">
-                                </a>
+                            <iframe id="stream-{{ stream.id }}" src="{{ stream.source }}" data-id="{{ stream.id }}" data-source="{{ stream.source }}" data-title="{{ stream.title }}" data-agency="{{ stream.agency }}" data-creator="{{ stream.created_by.username }}" class="card-img-top" focusable="true" title="Showing livestream {{ stream.title}}" muted="no"></iframe>
                         </div>
                     {% endwith %}
                 {% endfor %}

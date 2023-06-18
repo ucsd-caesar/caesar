@@ -23,7 +23,7 @@ from django.db.models import Q
 
 from asgiref.sync import async_to_sync, sync_to_async
 
-from config.tasks import auth_login, auth_path, post_stream, group
+from config.celery import auth_login, auth_path, post_stream
 from .models import Livestream, CustomUser
 from .serializers import *
 from .forms import *
@@ -282,6 +282,7 @@ def auth_stream(request):
             userInput = data.get('user')
             passInput = data.get('password')
             pathInput = data.get('path') 
+            action = data.get('action')
 
             # request credentials from mediamtx after receiving first request (always empty)
             if userInput == "" and passInput == "":
@@ -289,27 +290,35 @@ def auth_stream(request):
         except KeyError:
             return JsonResponse({"status": "error", "message": "No credentials provided"}, status=401)
         
+        # if action is 'read', let the user view the stream
+        if action == 'read':
+            return JsonResponse({"status": "success", "message": "Stream authorized"}, status=200)
+        
         # Offload the authentication and stream posting to Celery
         # auth_login -> auth_path
-        is_authorized = auth_login.delay(userInput, passInput)
-        print(is_authorized.get())
-        if is_authorized.get() == True:
+        is_authorized = auth_login.s(userInput, passInput)()
+        print(is_authorized)
+        if is_authorized == True:
             # check if path name matches id of user
             userId = CustomUser.objects.get(username=userInput).id
             if (str(userId) == pathInput):
                 # TODO: fix deadlock when calling auth_path with requests library
                 #
                 # call auth_path to check if path exists
+                logger.info("Warning: skipping auth_path check...")
+                result = post_stream.s(data)()
+                logger.info("result: " + str(result))
+                return result
                 # logger.info("calling requests.get ...")
-                # path_exists = auth_path.delay(pathInput)
-                # print(path_exists.content)
-                # if path_exists.status_code == True:
+                # path_exists = auth_path.s(pathInput)()
+                # print("path_exists: " + path_exists)
+                # if path_exists == True:
                 #     result = post_stream.delay(data)
                 #     return result.get()
                 # else:
                 #     return JsonResponse({"status": "error", "message": "Invalid path"}, status=401)
-                result = post_stream.delay(data)
-                return result.get()
+                # result = post_stream.delay(data)
+                # return result.get()
             else:
                 return JsonResponse({"status": "error", "message": "Invalid path"}, status=401)
         else:

@@ -309,25 +309,25 @@ class StreamAuthenticationTests(TestCase):
         except subprocess.TimeoutExpired:
             output.terminate()  
 
-    # def test_create_livestream_correct(self):
-    #     """
-    #     Test that a user can create a livestream at an authorized path with correct password
-    #     """
-    #     r = requests.get(self.path_url)
-    #     try:
-    #         r.json() # if json is returned, then the path exists
-    #         print(r.json())
-    #     except requests.exceptions.JSONDecodeError:
-    #         raise Exception("Path does not exist")
+    def test_create_livestream_correct(self):
+        """
+        Test that a user can create a livestream at an authorized path with correct password
+        """
+        r = requests.get(self.path_url)
+        try:
+            r.json() # if json is returned, then the path exists
+            print(r.json())
+        except requests.exceptions.JSONDecodeError:
+            raise Exception("Path does not exist")
         
-    #     rtsp_url = "rtsp://" + ADMIN_USER +":"+ ADMIN_PASS + "@mediamtx:8554/" + str(self.admin.id)
-    #     print("RTSP URL: " + rtsp_url)
-    #     output = subprocess.Popen(["ffmpeg", "-re", "-stream_loop", "-1", "-i", "dev/media/Rices.ts", "-c:v", "copy", "-c:a", "aac", "-bsf:a", "aac_adtstoasc", "-f", "rtsp", "-rtsp_transport", "tcp", rtsp_url])
-    #     try:
-    #         output.communicate(timeout=TIMEOUT)
-    #         print(output)
-    #         self.assertEqual(output.returncode, 0) # subprocess should not timeout
-    #     except subprocess.TimeoutExpired:
-    #         output.terminate()
-    #         raise Exception("Livestream did not start")
+        rtsp_url = "rtsp://" + ADMIN_USER +":"+ ADMIN_PASS + "@mediamtx:8554/" + str(self.admin.id)
+        print("RTSP URL: " + rtsp_url)
+        output = subprocess.Popen(["ffmpeg", "-re", "-stream_loop", "-1", "-i", "dev/media/Rices.ts", "-c:v", "copy", "-c:a", "aac", "-bsf:a", "aac_adtstoasc", "-f", "rtsp", "-rtsp_transport", "tcp", rtsp_url])
+        try:
+            output.communicate(timeout=TIMEOUT)
+            print(output)
+            self.assertEqual(output.returncode, 0) # subprocess should not timeout
+        except subprocess.TimeoutExpired:
+            output.terminate()
+            raise Exception("Livestream did not start")
 
